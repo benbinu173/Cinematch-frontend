@@ -1,0 +1,19 @@
+@font-face {
+    font-family: 'MyCustomFont';
+    src: url('./assets/fonts//Courier Prime Bold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  /* Apply the font to specific elements */
+  
+  
+  
+  /* this is the bg image of the conatact form which  was created in the contact.jsx */
+  .bg-img{
+    background-image: url(./assets/space-planet-science-night-generated-by-ai.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    min-height: 120vh;
+  }

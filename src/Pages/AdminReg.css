@@ -1,0 +1,7 @@
+.adminreg-bg{
+    background: url('./retro-vhs-packaging-indoors.jpg') no-repeat center  ;
+    background-size: cover;
+    min-height: 100vh;
+   
+    padding: 20px;
+}

@@ -1,0 +1,17 @@
+.play-icon {
+  display: inline-block;
+  text-align: center;
+  color: #dc3545;
+  transition: transform 0.2s ease;
+}
+
+.play-icon:hover {
+  transform: scale(1.1);
+  text-decoration: none;
+}
+
+.section-title {
+  font-weight: bold;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}

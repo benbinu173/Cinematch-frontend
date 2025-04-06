@@ -1,0 +1,62 @@
+/* Admin Dashboard Background */
+.admin-dashboard {
+    background: url('./pexels-nathan-engel-50858-436413.jpg') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+   
+    padding: 20px;
+}
+
+/* Dashboard Title */
+h2 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-align: center;
+    color: #fff;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+/* Card Styling (Glassmorphism Effect) */
+
+/* Card Styling */
+.stat-card {
+    background: rgba(255, 255, 255, 0.2); /* Translucent effect */
+    backdrop-filter: blur(8px); /* Glass effect */
+    border-radius: 15px;
+    padding: 20px;
+    color: white;
+    text-align: center;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  /* Hover Effect */
+  .stat-card:hover {
+    background: rgba(255, 255, 255, 0.4); /* Lighter translucent effect */
+    backdrop-filter: blur(12px); /* Stronger blur */
+    transform: scale(1.05);
+    color: white; /* Ensure text remains white */
+  }
+  
+  /* Icons Color on Hover */
+  .stat-card:hover h5,
+  .stat-card:hover p {
+    color: white !important;
+  }
+  
+  /* Login Card */
+  .login-card {
+    background: rgba(0, 0, 0, 0.4); /* Dark translucent for login */
+    backdrop-filter: blur(10px);
+    color: white;
+  }
+  
+  /* Button Styling */
+  .btn {
+    border-radius: 10px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+  }
+  
+  .btn:hover {
+    transform: scale(1.1);
+  }

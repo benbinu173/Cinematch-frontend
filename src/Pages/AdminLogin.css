@@ -1,0 +1,7 @@
+.adminlogin-bg{
+    background: url('./futuristic-moon-background.jpg') no-repeat center  ;
+    background-size: cover;
+    min-height: 100vh;
+   
+    padding: 20px;
+}

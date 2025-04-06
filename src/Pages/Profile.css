@@ -1,0 +1,24 @@
+.profilebg {
+    background: url('./breathtaking-shot-lake-wanaka-wanaka-village-new-zealand.jpg') no-repeat center center ;
+    background-size: cover;
+    width: 100vw; /* Ensures full width of the viewport */
+    height: 150vh; /* Ensures full height of the viewport */
+   
+    padding: 20px;
+}
+
+
+.small-card {
+    width: 180px;
+    height: 260px;
+  }
+  
+  .small-card img {
+    height: 120px;
+    object-fit: cover;
+  }
+  
+  .small-card .card-body {
+    padding: 10px;
+  }
+  
