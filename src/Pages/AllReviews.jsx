@@ -4,6 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./AllReviews.css";
 import api from "../Services/axios";
+import { serverUrl } from "../Services/ServerUrl";
 
 const AllReviews = () => {
   const [reviews, setReviews] = useState([]);
@@ -11,7 +12,7 @@ const AllReviews = () => {
   useEffect(() => {
     const fetchAllReviews = async () => {
       try {
-        const res = await api.get("http://localhost:4000/all-reviews");
+        const res = await api.get(`${serverUrl}/all-reviews`);
         console.log("All reviews fetched: ", res.data);
         setReviews(res.data);
       } catch (error) {
@@ -30,7 +31,7 @@ const AllReviews = () => {
     const token = sessionStorage.getItem("token"); // get the stored JWT
   
     try {
-      await api.delete(`http://localhost:4000/all-reviews/${reviewId}`, {
+      await api.delete(`${serverUrl}/all-reviews/${reviewId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -13,7 +13,7 @@ function AdminUserManagement() {
   useEffect(() => {
     const fetchUserStats = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/api/admin/users');
+        const response = await axios.get(`${serverUrl}/api/admin/users`);
         setUsers({
           total: response.data.totalUsers,
           active: response.data.activeUsers,

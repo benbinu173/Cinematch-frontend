@@ -6,6 +6,7 @@ import { FaPlayCircle } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./MovieDetails.css";
+import { serverUrl } from "../Services/ServerUrl";
 
 function MovieDetails() {
   const { id } = useParams();
@@ -69,7 +70,7 @@ function MovieDetails() {
 
     try {
       await axios.post(
-        "http://localhost:4000/reviews",
+        `${serverUrl}/reviews`,
         {
           movieId: id,
           reviewText,

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { serverUrl } from "../Services/ServerUrl";
 
 const Reviews = () => {
   const { id } = useParams(); // 🔄 Unified param
@@ -17,7 +18,7 @@ const Reviews = () => {
 
   const fetchReviews = () => {
     axios
-      .get(`http://localhost:4000/reviews/${id}`)
+      .get(`${serverUrl}/reviews/${id}`)
       .then((response) => setReviews(response.data))
       .catch((error) => console.error("Error fetching reviews:", error));
   };
@@ -28,7 +29,7 @@ const Reviews = () => {
 
   const handleDelete = (id) => {
     axios
-      .delete(`http://localhost:4000/reviews/${id}`, {
+      .delete(`${serverUrl}/reviews/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(() => fetchReviews())
@@ -44,7 +45,7 @@ const Reviews = () => {
   const handleUpdate = () => {
     axios
       .put(
-        `http://localhost:4000/reviews/${editingId}`,
+        `${serverUrl}/reviews/${editingId}`,
         { reviewText: editedText, rating: editedRating },
         { headers: { Authorization: `Bearer ${token}` } }
       )

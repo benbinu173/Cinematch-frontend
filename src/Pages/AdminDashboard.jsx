@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FaUsers, FaFilm, FaTv, FaChartBar, FaSignOutAlt, FaCommentDots } from 'react-icons/fa';
 import axios from 'axios';
 import './AdminDashboard.css';
+import { serverUrl } from '../Services/ServerUrl';
 
 function AdminDashboard() {
   const [stats, setStats] = useState({ users: 0, movies: 0, tvshows: 0, reviews: 0 });
@@ -26,11 +27,11 @@ function AdminDashboard() {
           console.log("TV Shows Response:", tvShowsResponse.data);
 
           // Fetch users count from the backend
-          const usersResponse = await axios.get("http://localhost:4000/users/count");
+          const usersResponse = await axios.get(`${serverUrl}/users/count`);
           console.log("Users Response:", usersResponse.data);
 
           // Fetch reviews count (Make sure this API exists in your backend)
-          const reviewsResponse = await axios.get("http://localhost:4000/reviews/all-reviews/count");
+          const reviewsResponse = await axios.get(`${serverUrl}/reviews/all-reviews/count`);
           console.log("Reviews Response:", reviewsResponse.data);
 
           // Update state with the fetched data

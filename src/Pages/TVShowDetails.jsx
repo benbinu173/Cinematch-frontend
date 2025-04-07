@@ -7,6 +7,7 @@ import { FaPlayCircle } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./tvshowdetails.css";
+import { serverUrl } from "../Services/ServerUrl";
 
 function TVShowDetails() {
   const { id } = useParams();
@@ -70,7 +71,7 @@ function TVShowDetails() {
 
     try {
       await axios.post(
-        "http://localhost:4000/reviews",
+        `${serverUrl}/reviews`,
         {
           tvShowId: id,
           reviewText,

@@ -11,6 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import EditMovies from '../Components/EditMovies';
 import EditSeries from '../Components/EditSeries';
 import './Profile.css';
+import { serverUrl } from '../Services/ServerUrl';
 
 function Profile() {
   const navigate = useNavigate();
@@ -115,7 +116,7 @@ function Profile() {
                 {data.map(item => (
                   <div key={item._id} className="col-md-6 mb-3">
                     <div className="card shadow-sm small-card" style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)', color: 'white', width: '180px', height: '260px' }}>
-                      <img src={`http://localhost:4000/upload/${item.movieImg || item.seriesImg}`} className="card-img-top" style={{ height: '120px', objectFit: 'cover' }} alt={item.title} />
+                      <img src={`${serverUrl}/upload/${item.movieImg || item.seriesImg}`} className="card-img-top" style={{ height: '120px', objectFit: 'cover' }} alt={item.title} />
                       <div className="card-body text-center p-2">
                         <h6 className="card-title text-truncate">{item?.title}</h6>
                         <div className="d-flex justify-content-center gap-2">
