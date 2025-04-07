@@ -84,7 +84,7 @@ function Profile() {
   };
 
   return (
-    <div className= "profilebg profile-container container-fluid ">
+    <div className="profilebg profile-container container-fluid">
       {isLoggedIn ? (
         <div className="card profile-card shadow-lg p-4 mx-auto text-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)', color: 'white' }}>
           <FaUserCircle size={80} className="text-primary mb-3" />
@@ -101,36 +101,40 @@ function Profile() {
           <Link to="/login" className="btn btn-warning mt-3">Login Here</Link>
         </div>
       )}
-   <div className="row mt-5">
-  {isLoggedIn && [
-    { title: "🎬 My Movies", data: movies, addComponent: <Addmovies />, editComponent: EditMovies, setEditing: setEditingMovie, editing: editingMovie },
-    { title: "📺 My Series", data: series, addComponent: <Addseries />, editComponent: EditSeries, setEditing: setEditingSeries, editing: editingSeries }
-  ].map(({ title, data, addComponent, editComponent: EditComponent, setEditing, editing }, idx) => (
-    <div key={idx} className="col-md-6">
-      <div className="border shadow-sm p-4 rounded" style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)', color: 'white' }}>
-        <h4 className="fw-bold text-center">{title}</h4>
-        {addComponent}
-        <div className="row mt-4">
-          {data.map(item => (
-            <div key={item._id} className="col-md-6 mb-3">
-              <div className="card shadow-sm small-card" style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)', color: 'white', width: '180px', height: '260px' }}>
-                <img src={`http://localhost:4000/uploads/${item.movieImg || item.seriesImg}`} className="card-img-top" style={{ height: '120px', objectFit: 'cover' }} alt={item.title} />
-                <div className="card-body text-center p-2">
-                  <h6 className="card-title text-truncate">{item?.title}</h6>
-                  <div className="d-flex justify-content-center gap-2">
-                    <AiFillEdit className="text-primary edit-icon" onClick={() => setEditing(item)} />
-                    <AiFillDelete className="text-danger delete-icon" onClick={() => handleDelete(item._id, idx === 0 ? 'movie' : 'series')} />
+
+      <div className="row mt-5">
+        {isLoggedIn && [
+          { title: "🎬 My Movies", data: movies, addComponent: <Addmovies />, setEditing: setEditingMovie },
+          { title: "📺 My Series", data: series, addComponent: <Addseries />, setEditing: setEditingSeries }
+        ].map(({ title, data, addComponent, setEditing }, idx) => (
+          <div key={idx} className="col-md-6">
+            <div className="border shadow-sm p-4 rounded" style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)', color: 'white' }}>
+              <h4 className="fw-bold text-center">{title}</h4>
+              {addComponent}
+              <div className="row mt-4">
+                {data.map(item => (
+                  <div key={item._id} className="col-md-6 mb-3">
+                    <div className="card shadow-sm small-card" style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)', color: 'white', width: '180px', height: '260px' }}>
+                      <img src={`http://localhost:4000/upload/${item.movieImg || item.seriesImg}`} className="card-img-top" style={{ height: '120px', objectFit: 'cover' }} alt={item.title} />
+                      <div className="card-body text-center p-2">
+                        <h6 className="card-title text-truncate">{item?.title}</h6>
+                        <div className="d-flex justify-content-center gap-2">
+                          <AiFillEdit className="text-primary edit-icon" onClick={() => setEditing(item)} />
+                          <AiFillDelete className="text-danger delete-icon" onClick={() => handleDelete(item._id, idx === 0 ? 'movie' : 'series')} />
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                ))}
               </div>
             </div>
-          ))}
-        </div>
-        {editing && <EditComponent item={editing} setEditing={setEditing} />}
+          </div>
+        ))}
       </div>
-    </div>
-  ))}
-</div>
+
+      {/* ✅ Conditionally render the editors outside the loop */}
+      {editingMovie && <EditMovies movie={editingMovie} setEditingMovie={setEditingMovie} />}
+      {editingSeries && <EditSeries series={editingSeries} setEditingSeries={setEditingSeries} />}
 
       <ToastContainer />
     </div>

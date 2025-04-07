@@ -16,6 +16,7 @@ function AddSeries() {
 
   const [seriesDetails, setSeriesDetails] = useState({
     title: "",
+    tmdbId: "",
     year: "",
     seasons: "",
     rating: "",
@@ -48,6 +49,7 @@ function AddSeries() {
   const handleCancel = () => {
     setSeriesDetails({
       title: "",
+      tmdbId: "",
       year: "",
       seasons: "",
       rating: "",
@@ -59,15 +61,16 @@ function AddSeries() {
   };
 
   const handleAdd = async () => {
-    const { title, year, seasons, rating, overview, seriesImg } = seriesDetails;
+    const { title, tmdbId, year, seasons, rating, overview, seriesImg } = seriesDetails;
 
-    if (!title || !year || !seasons || !rating || !overview || !seriesImg) {
+    if (!title || !tmdbId || !year || !seasons || !rating || !overview || !seriesImg) {
       toast.error("Please fill in all fields");
       return;
     }
 
     const reqBody = new FormData();
     reqBody.append("title", title);
+    reqBody.append("tmdbId", tmdbId);
     reqBody.append("year", year);
     reqBody.append("seasons", seasons);
     reqBody.append("rating", rating);
@@ -90,7 +93,7 @@ function AddSeries() {
           toast.error(result.response?.data || "Something went wrong");
         }
       } catch (error) {
-        toast.error("Error adding Series. Please try again.");
+        toast.error(error?.response?.data || "Error adding Series. Please try again.");
       }
     }
   };
@@ -136,6 +139,14 @@ function AddSeries() {
                       value={seriesDetails.title}
                       onChange={(e) => setSeriesDetails({ ...seriesDetails, title: e.target.value })}
                       placeholder='Series Title'
+                    />
+                  </Form.Group>
+                  <Form.Group className='mb-3'>
+                    <Form.Control
+                      type='text'
+                      value={seriesDetails.tmdbId}
+                      onChange={(e) => setSeriesDetails({ ...seriesDetails, tmdbId: e.target.value })}
+                      placeholder='TMDb ID'
                     />
                   </Form.Group>
                   <Form.Group className='mb-3'>

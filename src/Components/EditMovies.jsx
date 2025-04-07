@@ -2,143 +2,119 @@ import React, { useState, useContext, useEffect } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import { toast, ToastContainer } from 'react-toastify';
 import { updateUserMoviesAPI } from '../Services/allApi';
-import { editResponseContext , addResponseContext } from '../Context/ContextSharing';
+import { editResponseContext, addResponseContext } from '../Context/ContextSharing';
 import { serverUrl } from '../Services/ServerUrl';
 
 function EditMovies({ movie, setEditingMovie }) {
     const { setEditResponse } = useContext(editResponseContext);
-    const { setAddResponse } = useContext(addResponseContext); 
-    //   const [show, setShow] = useState(false);
-    const [key, setKey] = useState(0)
-    const [show, setShow] = useState(false);
+    const { setAddResponse } = useContext(addResponseContext);
 
+    const [key, setKey] = useState(0);
     const [preview, setPreview] = useState("");
+
     const [movieDetails, setMovieDetails] = useState({
-        title: movie?.title,
-        year: movie?.year,
-        rating: movie?.rating,
-        overview: movie?.overview,
-        movieImg: ""
+        title: "",
+        year: "",
+        rating: "",
+        overview: "",
+        movieImg: null
     });
 
-    
+    // ✅ Update form state when `movie` prop changes
+    useEffect(() => {
+        if (movie) {
+            setMovieDetails({
+                title: movie.title || "",
+                year: movie.year || "",
+                rating: movie.rating || "",
+                overview: movie.overview || "",
+                movieImg: null
+            });
+
+            setPreview("");
+            setKey(prev => prev + 1); // reset file input
+        }
+    }, [movie]);
 
     const handleClose = () => {
-        handleCancel(); // Reset input fields
-        if (setEditingMovie) {
-            setEditingMovie(null); // Properly reset the state
-        }
+        handleCancel();
+        if (setEditingMovie) setEditingMovie(null);
     };
 
     const handleCancel = () => {
         setMovieDetails({
-            title: movie?.title,
-            year: movie?.year,
-            rating: movie?.rating,
-            overview: movie?.overview,
-            movieImg: ""
+            title: movie?.title || "",
+            year: movie?.year || "",
+            rating: movie?.rating || "",
+            overview: movie?.overview || "",
+            movieImg: null
         });
-        setPreview("")
-
-        // here we appplied the below code because while editin when we change the image the image changes and when we click on the cancel button a conflict occurs tht again whne we try to replace the image with the same img which was used the image wont be displayed hence we sent the key value as 0 and setkey value as 1
-        if (key == 0) {
-            setKey(1)
-
-        }
-        else {
-            setKey(0)
-        }
+        setPreview("");
+        setKey(prev => prev + 1);
     };
 
     const handleUpdate = async () => {
-        const { title, year, rating, overview, movieImg } = movieDetails
-        if (!title || !year || !rating || !overview) {
-          toast.error(`fill the form completely`)
-        }
-        else {
-          // definin rebody because it is a part of the api
-    
-          const reqBody = new FormData()
-          reqBody.append("title", title)
-          reqBody.append("year", year)
-          reqBody.append("rating", rating)
-        //   reqBody.append("website", website)
-          reqBody.append("overview", overview)
-          // in the below line of code can be defined as when the image is updated reqBody.append("profileImg",profileImg) this code runs if not update the img which was ther b4 we be used itself   reqBody.append("profileImg",projects.profileImg)
-          preview ? reqBody.append("movieImg", movieImg) :  reqBody.append("movieImg", movie?.movieImg)
-    
-          // reqheader since it is a part of the api
-          const token = sessionStorage.getItem("token")
+        const { title, year, rating, overview, movieImg } = movieDetails;
 
-          if (preview) {
-            const reqHeader = {
-              "Content-Type": "multipart/form-data",
-              "Authorization": `Bearer ${token}`
-            }
-            // the projects can be taken from projects._id
-            const result = await updateUserMoviesAPI(movie._id, reqBody, reqHeader)
-            console.log(result);
-            if (result.status == 200) {
-              setEditResponse(result)
-              toast.success(`project updated successfully`)
-              //  here we added settimeout in order to close the modal after certain number of seconds
-              setTimeout(() => {
-                handleClose()
-              }, [2000])
-    
-              setAddResponse(result)
-    
-            } else if (result.status == 406) {
-              toast.warning(result.response.data)
-            }
-            else {
-              toast.error(`something went wrong`)
-            }
-    
-          }
-          else {
-            const reqHeader = {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`
-            }
-            const result = await updateUserMoviesAPI(movie._id, reqBody, reqHeader)
-            console.log(result);
-    
-            if (result.status == 200) {
-              setEditResponse(result)
-              alert(`project updated successfully`)
-              //  here we added settimeout in order to close the modal after certain number of seconds
-              setTimeout(() => {
-                handleClose()
-              }, [2000])
-    
-              setAddResponse(result)
-    
-            } else if (result.status == 406) {
-              toast.warning(result.response.data)
-            }
-            else {
-              toast.error(`something went wrong`)
-            }
-          }
+        if (!title || !year || !rating || !overview) {
+            toast.error("Please fill out the entire form.");
+            return;
         }
-      }
-    
-    
-    
+
+        const reqBody = new FormData();
+        reqBody.append("title", title);
+        reqBody.append("year", year);
+        reqBody.append("rating", rating);
+        reqBody.append("overview", overview);
+
+        if (movieImg instanceof File) {
+            reqBody.append("movieImg", movieImg);
+        }
+
+        const token = sessionStorage.getItem("token");
+        const reqHeader = {
+            "Authorization": `Bearer ${token}`
+        };
+
+        try {
+            const result = await updateUserMoviesAPI(movie._id, reqBody, reqHeader);
+
+            if (result.status === 200) {
+                setEditResponse(result);
+                setAddResponse(result);
+                toast.success("Movie updated successfully!");
+
+                setTimeout(() => {
+                    handleClose();
+                }, 2000);
+            } else if (result.status === 406) {
+                toast.warning(result.response.data);
+            } else {
+                toast.error("Something went wrong.");
+            }
+        } catch (error) {
+            console.error("Update error:", error);
+            toast.error("Server error during update.");
+        }
+    };
 
     const handleFile = (e) => {
-        // console.log(e.target.files);
-        setMovieDetails({ ...movieDetails, movieImg: e.target.files[0] })
-    
-      }
+        const file = e.target.files[0];
+        if (file) {
+            setMovieDetails({ ...movieDetails, movieImg: file });
+        }
+    };
 
-    
-  useEffect(() => {
-    if (movieDetails.movieImg) {
-      setPreview(URL.createObjectURL(movieDetails.movieImg))
-    }
-  }, [movieDetails.movieImg])
+    useEffect(() => {
+        if (movieDetails.movieImg instanceof File) {
+            const objectUrl = URL.createObjectURL(movieDetails.movieImg);
+            setPreview(objectUrl);
+
+            return () => URL.revokeObjectURL(objectUrl);
+        } else {
+            setPreview("");
+        }
+    }, [movieDetails.movieImg]);
 
     return (
         <Modal show={true} onHide={handleClose} centered size="lg">
@@ -149,15 +125,25 @@ function EditMovies({ movie, setEditingMovie }) {
                 <div className="container">
                     <div className="row">
                         <div className="col-6 mt-3">
-                            <label htmlFor="movieImage">
+                            <label htmlFor="movieImage" style={{ cursor: "pointer" }}>
                                 <input
-                                key={key}
+                                    key={key}
                                     id="movieImage"
                                     type="file"
                                     style={{ display: "none" }}
-                                   onChange={(e) => handleFile(e)}
+                                    onChange={handleFile}
                                 />
-                                <img src={preview ? preview : `${serverUrl}/uploads/${movie?.movieImg}`} className="img-fluid" alt="Preview" />
+                                <img
+                                    src={
+                                        preview
+                                            ? preview
+                                            : movie?.movieImg
+                                            ? `${serverUrl}/upload/${movie.movieImg}`
+                                            : "https://via.placeholder.com/300x200.png?text=No+Image"
+                                    }
+                                    className="img-fluid rounded"
+                                    alt="Movie"
+                                />
                             </label>
                         </div>
                         <div className="col-6 mt-3">

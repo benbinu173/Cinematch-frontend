@@ -19,7 +19,8 @@ function Addmovies() {
     year: "",
     rating: "",
     overview: "",
-    movieImg: ""
+    movieImg: "",
+    tmdbId: ""
   });
 
   useEffect(() => {
@@ -50,17 +51,18 @@ function Addmovies() {
       year: "",
       rating: "",
       overview: "",
-      movieImg: ""
+      movieImg: "",
+      tmdbId: ""
     });
     setImagePreview(null);
     setKey((prevKey) => (prevKey === 1 ? 0 : 1));
   };
 
   const handleAdd = async () => {
-    const { title, year, rating, overview, movieImg } = movieDetails;
+    const { title, year, rating, overview, movieImg, tmdbId } = movieDetails;
 
-    if (!title || !year || !rating || !overview || !movieImg) {
-      toast.error("Please fill in all fields");
+    if (!title || !year || !rating || !overview || !movieImg || !tmdbId) {
+      toast.error("Please fill in all fields including TMDb ID");
       return;
     }
 
@@ -70,10 +72,11 @@ function Addmovies() {
     reqBody.append("rating", rating);
     reqBody.append("overview", overview);
     reqBody.append("movieImg", movieImg);
+    reqBody.append("tmdbId", tmdbId);
 
     if (token) {
       const reqHeader = {
-        "Content-type": "multipart/form-data",
+        "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`
       };
 
@@ -85,10 +88,14 @@ function Addmovies() {
           setAddResponse(result);
         } else {
           toast.error(result.response?.data || "Something went wrong");
+          console.error("Add Movie Error:", result);
         }
       } catch (error) {
+        console.error("Add Movie Catch Error:", error);
         toast.error("Error adding Movie. Please try again.");
       }
+    } else {
+      toast.error("No token found. Please login.");
     }
   };
 
@@ -105,7 +112,7 @@ function Addmovies() {
           <Modal.Title className='fw-bold'>Add Movie</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div className='movie-container container' >
+          <div className='movie-container container'>
             <div className='row align-items-center'>
               <div className='col-md-5 text-center mb-3'>
                 <label htmlFor='uploadImage' className='d-block'>
@@ -149,6 +156,14 @@ function Addmovies() {
                       value={movieDetails.rating}
                       onChange={(e) => setmovieDetails({ ...movieDetails, rating: e.target.value })}
                       placeholder='Your Rating'
+                    />
+                  </Form.Group>
+                  <Form.Group className='mb-3'>
+                    <Form.Control
+                      type='text'
+                      value={movieDetails.tmdbId}
+                      onChange={(e) => setmovieDetails({ ...movieDetails, tmdbId: e.target.value })}
+                      placeholder='TMDb ID (e.g., 27205)'
                     />
                   </Form.Group>
                   <Form.Group>
