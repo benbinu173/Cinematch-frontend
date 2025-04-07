@@ -1,1 +1,1 @@
-export const serverUrl = ""
+export const serverUrl = "https://cinematch-backend.onrender.com"
