@@ -9,7 +9,7 @@ import Watchlist from "./Pages/Watchlist";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
 import Profile from "./Pages/Profile";
-import Contact from "./pages/Contact";
+import Contact from "./Pages/Contact"
 import AdminDashboard from "./Pages/AdminDashboard";
 import NotFound from "./Pages/NotFound";
 import CustomNavbar from "./Components/CustomNavbar";
