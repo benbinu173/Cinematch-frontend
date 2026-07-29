@@ -1,9 +1,8 @@
-// keep everything up to imports
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Modal, Button, Row, Col, Spinner, Form } from "react-bootstrap";
+import { Spinner } from "react-bootstrap";
 import axios from "axios";
-import { FaPlayCircle } from "react-icons/fa";
+import { FaPlayCircle, FaStar, FaTimes, FaTv } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./tvshowdetails.css";
@@ -16,16 +15,15 @@ function TVShowDetails() {
   const [cast, setCast] = useState([]);
   const [trailerKey, setTrailerKey] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [show, setShow] = useState(true);
   const [reviewText, setReviewText] = useState("");
   const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
 
   useEffect(() => {
     async function fetchTVShowDetails() {
       try {
         setLoading(true);
         const apiKey = "104982ca487a975dd171416b2958f849";
-
         const [tvShowRes, castRes, trailerRes] = await Promise.all([
           axios.get(`https://api.themoviedb.org/3/tv/${id}`, {
             params: { api_key: apiKey, language: "en-US" },
@@ -40,9 +38,8 @@ function TVShowDetails() {
 
         setTVShow(tvShowRes.data);
         setCast(castRes.data.cast.slice(0, 5));
-
         const trailer = trailerRes.data.results.find(
-          (video) => video.type === "Trailer" && video.site === "YouTube"
+          (v) => v.type === "Trailer" && v.site === "YouTube"
         );
         if (trailer) setTrailerKey(trailer.key);
       } catch (error) {
@@ -52,38 +49,25 @@ function TVShowDetails() {
         setLoading(false);
       }
     }
-
     fetchTVShowDetails();
   }, [id]);
 
   const handleSubmitReview = async () => {
     const token = sessionStorage.getItem("token");
-
     if (!reviewText.trim() || rating < 1 || rating > 5) {
-      toast.error("Please enter a review and select a rating between 1 and 5.");
+      toast.error("Please enter a review and select a rating.");
       return;
     }
-
     if (!token) {
       toast.error("Please login to submit a review.");
       return;
     }
-
     try {
       await axios.post(
         `${serverUrl}/reviews`,
-        {
-          tvShowId: id,
-          reviewText,
-          rating,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { tvShowId: id, reviewText, rating },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-
       toast.success("Review submitted successfully!");
       setReviewText("");
       setRating(0);
@@ -94,115 +78,208 @@ function TVShowDetails() {
     }
   };
 
-  const handleClose = () => {
-    setShow(false);
-    navigate("/tvshows");
-  };
+  const handleClose = () => navigate("/tvshows");
+
+  // Derived display values
+  const firstAirYear = tvShow?.first_air_date?.slice(0, 4);
+  const seasons = tvShow?.number_of_seasons;
+  const episodes = tvShow?.number_of_episodes;
+  const genres = tvShow?.genres?.map((g) => g.name).join(" · ");
+  const voteAvg = tvShow?.vote_average?.toFixed(1);
+  const status = tvShow?.status;
 
   return (
     <>
-      <ToastContainer />
-      <Modal show={show} onHide={handleClose} centered size="lg" className="custom-modal">
+      <ToastContainer theme="dark" position="top-center" autoClose={3000} />
+
+      {/* Backdrop dim */}
+      <div className="tvd-backdrop" onClick={handleClose} />
+
+      <div className="tvd-panel">
+        {/* Blue hairline — TV-specific accent per design system */}
+        <div className="tvd-hairline" />
+
+        {/* Close */}
+        <button className="tvd-close" onClick={handleClose} aria-label="Close">
+          <FaTimes />
+        </button>
+
         {loading ? (
-          <div className="text-center my-5">
-            <Spinner animation="border" />
-            <p>Loading TV show details...</p>
+          <div className="tvd-loading">
+            <Spinner animation="border" style={{ color: "#3B82F6" }} />
+            <p>Loading details…</p>
           </div>
         ) : tvShow ? (
-          <>
-            <Modal.Header closeButton>
-              <Modal.Title className="modal-title">{tvShow.name}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <Row className="g-4">
-                <Col md={5} className="text-center position-relative">
-                  <img
-                    src={
-                      tvShow.poster_path
-                        ? `https://image.tmdb.org/t/p/w500${tvShow.poster_path}`
-                        : "https://via.placeholder.com/300x450?text=No+Image"
-                    }
-                    alt={tvShow.name}
-                    className="img-fluid tvshow-poster rounded shadow-sm"
-                  />
+          <div className="tvd-body">
+
+            {/* ── Hero ── */}
+            <div
+              className="tvd-hero"
+              style={{
+                backgroundImage: tvShow.backdrop_path
+                  ? `url(https://image.tmdb.org/t/p/w1280${tvShow.backdrop_path})`
+                  : "none",
+              }}
+            >
+              <div className="tvd-hero-overlay" />
+              <div className="tvd-hero-content">
+                <img
+                  src={
+                    tvShow.poster_path
+                      ? `https://image.tmdb.org/t/p/w500${tvShow.poster_path}`
+                      : "https://via.placeholder.com/110x165?text=?"
+                  }
+                  alt={tvShow.name}
+                  className="tvd-poster"
+                />
+                <div className="tvd-hero-info">
+                  {/* TV badge */}
+                  <span className="tvd-badge">
+                    <FaTv style={{ fontSize: "0.65rem" }} /> TV Series
+                  </span>
+
+                  <h1 className="tvd-title">{tvShow.name}</h1>
+
+                  <div className="tvd-meta">
+                    {firstAirYear && <span>{firstAirYear}</span>}
+                    {seasons && (
+                      <>
+                        <span className="tvd-dot">·</span>
+                        <span>{seasons} Season{seasons !== 1 ? "s" : ""}</span>
+                      </>
+                    )}
+                    {episodes && (
+                      <>
+                        <span className="tvd-dot">·</span>
+                        <span>{episodes} Episodes</span>
+                      </>
+                    )}
+                    {status && (
+                      <>
+                        <span className="tvd-dot">·</span>
+                        <span className={`tvd-status ${status === "Returning Series" ? "tvd-status--live" : ""}`}>
+                          {status}
+                        </span>
+                      </>
+                    )}
+                  </div>
+
+                  {genres && <p className="tvd-genres">{genres}</p>}
+
+                  {voteAvg && (
+                    <div className="tvd-score">
+                      <FaStar className="tvd-star-icon" />
+                      <span className="tvd-score-val">{voteAvg}</span>
+                      <span className="tvd-score-max">/ 10</span>
+                      {tvShow.vote_count && (
+                        <span className="tvd-vote-count">
+                          ({tvShow.vote_count.toLocaleString()} votes)
+                        </span>
+                      )}
+                    </div>
+                  )}
+
                   {trailerKey && (
                     <a
                       href={`https://www.youtube.com/watch?v=${trailerKey}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="play-icon"
+                      className="tvd-trailer-btn"
                     >
-                      <FaPlayCircle size={70} />
+                      <FaPlayCircle />
+                      Watch Trailer
                     </a>
                   )}
-                </Col>
-                <Col md={7}>
-                  <h5 className="section-title">Overview</h5>
-                  <p className="text-muted">{tvShow.overview}</p>
-                  <h5 className="section-title">Top Cast</h5>
-                  <div className="d-flex">
+                </div>
+              </div>
+            </div>
+
+            {/* ── Details ── */}
+            <div className="tvd-details">
+
+              {/* Overview */}
+              <section className="tvd-section">
+                <h2 className="tvd-section-label">Overview</h2>
+                <p className="tvd-overview">{tvShow.overview}</p>
+              </section>
+
+              {/* Cast */}
+              {cast.length > 0 && (
+                <section className="tvd-section">
+                  <h2 className="tvd-section-label">Top Cast</h2>
+                  <div className="tvd-cast">
                     {cast.map((actor) => (
-                      <div key={actor.id} className="cast-card me-2 text-center">
-                        <img
-                          src={
-                            actor.profile_path
-                              ? `https://image.tmdb.org/t/p/w200${actor.profile_path}`
-                              : "https://via.placeholder.com/100"
-                          }
-                          alt={actor.name}
-                          className="rounded-circle cast-img"
-                        />
-                        <p className="cast-name">{actor.name}</p>
+                      <div key={actor.id} className="tvd-cast-card">
+                        <div className="tvd-cast-img-wrap">
+                          <img
+                            src={
+                              actor.profile_path
+                                ? `https://image.tmdb.org/t/p/w200${actor.profile_path}`
+                                : "https://via.placeholder.com/80x80?text=?"
+                            }
+                            alt={actor.name}
+                            className="tvd-cast-img"
+                          />
+                        </div>
+                        <p className="tvd-cast-name">{actor.name}</p>
+                        {actor.character && (
+                          <p className="tvd-cast-char">{actor.character}</p>
+                        )}
                       </div>
                     ))}
                   </div>
-                  <h5 className="section-title mt-4">Submit a Review</h5>
-                  {sessionStorage.getItem("token") ? (
-                    <>
-                      <Form.Group className="mb-2">
-                        <Form.Label>Star Rating</Form.Label>
-                        <Form.Select
-                          value={rating}
-                          onChange={(e) => setRating(Number(e.target.value))}
-                        >
-                          <option value={0}>Select rating</option>
-                          {[1, 2, 3, 4, 5].map((star) => (
-                            <option key={star} value={star}>
-                              {star} Star{star > 1 ? "s" : ""}
-                            </option>
-                          ))}
-                        </Form.Select>
-                      </Form.Group>
-                      <textarea
-                        className="form-control mb-2"
-                        value={reviewText}
-                        onChange={(e) => setReviewText(e.target.value)}
-                        placeholder="Write your review here..."
-                      ></textarea>
-                      <button
-                        className="btn btn-dark"
-                        onClick={handleSubmitReview}
-                        disabled={!reviewText.trim() || rating < 1}
-                      >
-                        Submit Review
-                      </button>
-                    </>
-                  ) : (
-                    <p className="text-danger">You must be logged in to submit a review.</p>
-                  )}
-                </Col>
-              </Row>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleClose}>
-                Close
-              </Button>
-            </Modal.Footer>
-          </>
+                </section>
+              )}
+
+              {/* Review */}
+              <section className="tvd-section">
+                <h2 className="tvd-section-label">Leave a Review</h2>
+                {sessionStorage.getItem("token") ? (
+                  <div className="tvd-review-form">
+                    <div className="tvd-stars">
+                      {[1, 2, 3, 4, 5].map((s) => (
+                        <FaStar
+                          key={s}
+                          className={`tvd-star ${s <= (hoverRating || rating) ? "tvd-star--active" : ""}`}
+                          onClick={() => setRating(s)}
+                          onMouseEnter={() => setHoverRating(s)}
+                          onMouseLeave={() => setHoverRating(0)}
+                        />
+                      ))}
+                      {rating > 0 && (
+                        <span className="tvd-rating-label">{rating} / 5</span>
+                      )}
+                    </div>
+
+                    <textarea
+                      className="tvd-textarea"
+                      rows={4}
+                      value={reviewText}
+                      onChange={(e) => setReviewText(e.target.value)}
+                      placeholder="What did you think of this show?"
+                    />
+
+                    <button
+                      className="tvd-submit-btn"
+                      onClick={handleSubmitReview}
+                      disabled={!reviewText.trim() || rating < 1}
+                    >
+                      Submit Review
+                    </button>
+                  </div>
+                ) : (
+                  <p className="tvd-login-prompt">
+                    <span className="tvd-login-accent">Sign in</span> to leave a review.
+                  </p>
+                )}
+              </section>
+
+            </div>
+          </div>
         ) : (
-          <p className="text-center">TV show not found.</p>
+          <p className="tvd-loading">TV show not found.</p>
         )}
-      </Modal>
+      </div>
     </>
   );
 }

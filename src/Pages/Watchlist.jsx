@@ -1,65 +1,84 @@
 import React, { useState, useEffect } from 'react';
-import { FaStar } from 'react-icons/fa';
+import { FaStar, FaFilm } from 'react-icons/fa';
+import './Watchlist.css';
 
 function Watchlist() {
-  const isLoggedIn = sessionStorage.getItem("token");
+  const isLoggedIn = sessionStorage.getItem('token');
   const [watchlist, setWatchlist] = useState([]);
 
   useEffect(() => {
-    const storedWatchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
-    setWatchlist(storedWatchlist);
+    const stored = JSON.parse(localStorage.getItem('watchlist')) || [];
+    setWatchlist(stored);
   }, []);
 
-  // Function to remove a movie from watchlist
   const removeFromWatchlist = (id) => {
-    const updatedList = watchlist.filter(movie => movie.id !== id);
-    setWatchlist(updatedList);
-    localStorage.setItem('watchlist', JSON.stringify(updatedList));
+    const updated = watchlist.filter((movie) => movie.id !== id);
+    setWatchlist(updated);
+    localStorage.setItem('watchlist', JSON.stringify(updated));
   };
 
+  if (!isLoggedIn) {
+    return (
+      <div className="watchlist-page">
+        <div className="watchlist-denied">
+          <h3>Access Denied</h3>
+          <p>You must be logged in to view your Watchlist.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className='container watchlist-bg mt-5'>
-      {isLoggedIn ? (
-        <div>
-          <h2 className="text-center fw-bold mb-4">📺 Your Watchlist</h2>
-          <div className="row g-4">
-            {watchlist.length > 0 ? (
-              watchlist.map((movie) => (
-                <div key={movie.id} className="col-md-3">
-                  <div className="card shadow-lg border-0 rounded-3 text-center">
-                    <img 
-                      src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} 
-                      className="card-img-top rounded-top" 
-                      alt={movie.title} 
-                      style={{ height: "300px", objectFit: "cover" }} 
-                      loading="lazy" 
-                    />
-                    <div className="card-body">
-                      <h5 className="card-title fw-bold">{movie.title}</h5>
-                      <p className="fw-bold">
-                        <FaStar className="text-warning" /> {movie.vote_average.toFixed(1)}
-                      </p>
-                      <button 
-                        className="btn btn-danger w-100"
-                        onClick={() => removeFromWatchlist(movie.id)}
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p className="text-center text-muted mt-3">No movies added to Watchlist yet.</p>
-            )}
+    <div className="watchlist-page">
+      {/* Header */}
+      <div className="watchlist-header">
+        <h2>Your <span>Watchlist</span></h2>
+        <p>{watchlist.length} {watchlist.length === 1 ? 'title' : 'titles'} saved</p>
+        <div className="watchlist-divider" />
+      </div>
+
+      {/* Grid */}
+      <div className="watchlist-grid">
+        {watchlist.length > 0 ? (
+          watchlist.map((movie) => (
+            <div key={movie.id} className="watchlist-card">
+              <img
+                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                className="watchlist-card-img"
+                alt={movie.title}
+                loading="lazy"
+              />
+
+              {/* Hover-reveal remove button */}
+              <div className="watchlist-card-overlay">
+                <button
+                  className="watchlist-remove-btn"
+                  onClick={() => removeFromWatchlist(movie.id)}
+                >
+                  Remove
+                </button>
+              </div>
+
+              <div className="watchlist-card-body">
+                <p className="watchlist-card-title" title={movie.title}>
+                  {movie.title}
+                </p>
+                <p className="watchlist-card-rating">
+                  <FaStar size={12} />
+                  {movie.vote_average.toFixed(1)}
+                </p>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="watchlist-empty">
+            <div className="watchlist-empty-icon">
+              <FaFilm />
+            </div>
+            <p>Nothing here yet — start adding titles to your watchlist.</p>
           </div>
-        </div>
-      ) : (
-        <div className="text-center mt-5">
-          <h3 className="text-danger fw-bold">Access Denied</h3>
-          <p className='text-muted'>You must be logged in to access your Watchlist.</p>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

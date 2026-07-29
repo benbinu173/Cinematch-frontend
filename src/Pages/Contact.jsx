@@ -1,128 +1,197 @@
 import React, { useState } from "react";
 import emailjs from "emailjs-com";
-import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaFacebook, FaInstagram, FaTwitter, FaTiktok, FaYoutube } from "react-icons/fa";
-import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer and toast
-import 'react-toastify/dist/ReactToastify.css';  // Import the default styles for the toast notifications
+import {
+  FaEnvelope, FaPhone, FaMapMarkerAlt,
+  FaFacebook, FaInstagram, FaTwitter, FaTiktok, FaYoutube,
+  FaPaperPlane
+} from "react-icons/fa";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "./Contact.css";
 
 function Contact() {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
-  const [status, setStatus] = useState(""); // Success or error message
+  const [sending, setSending] = useState(false);
 
-  // Handle input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Handle form submission
   const sendEmail = (e) => {
     e.preventDefault();
-  
-    // Prepare the email data
+    setSending(true);
+
     const emailTemplateParams = {
       name: formData.name,
       email: formData.email,
       message: formData.message,
     };
-  
-    // Send the email using emailjs
+
     emailjs
       .send(
-        "service_w08nyho",   // Replace with your EmailJS Service ID
-        "template_bbsbgjp",  // Updated with your correct EmailJS Template ID
-        emailTemplateParams,  // Data for placeholders in the template
-        "aX_n6uOrQaga7NdQN"   // Replace with your EmailJS Public Key
+        "service_w08nyho",
+        "template_bbsbgjp",
+        emailTemplateParams,
+        "aX_n6uOrQaga7NdQN"
       )
       .then(
-        (response) => {
-          setStatus("Message sent successfully! ✅");
+        () => {
+          toast.success("Message sent successfully!");
           setFormData({ name: "", email: "", message: "" });
-          toast.success("Message sent successfully! ✅"); // Show success toast
-          console.log("Email sent successfully:", response);
+          setSending(false);
         },
         (error) => {
           console.error("Error sending email:", error);
-          setStatus("Failed to send message. ❌ Try again later.");
-          toast.error("Failed to send message. ❌ Try again later."); // Show error toast
+          toast.error("Failed to send message. Try again later.");
+          setSending(false);
         }
       );
   };
 
+  const socials = [
+    { icon: <FaFacebook />, href: "https://www.facebook.com", label: "Facebook" },
+    { icon: <FaInstagram />, href: "https://www.instagram.com", label: "Instagram" },
+    { icon: <FaTwitter />, href: "https://www.twitter.com", label: "Twitter" },
+    { icon: <FaTiktok />, href: "https://www.tiktok.com", label: "TikTok" },
+    { icon: <FaYoutube />, href: "https://www.youtube.com", label: "YouTube" },
+  ];
+
   return (
-    <div className="bg-img">
-      <div className="container  text-light">
-        {/* Header */}
-        <h2 className="text-center mb-4 mt-5 pt-5">📞 Contact CineMatch</h2>
-        <p className="text-center text-muted">Have questions? Reach out to us!</p>
+    <div className="contact-page">
+      {/* Radial glow */}
+      <div className="contact-glow" />
 
-        {/* Contact Info */}
-        <div className="row mt-4">
-          <div className="col-md-4 text-center">
-            <FaEnvelope size={30} className="text-warning mb-2" />
-            <h5>Email Us</h5>
-            <p>support@cinematch.com</p>
-          </div>
-          <div className="col-md-4 text-center">
-            <FaPhone size={30} className="text-warning mb-2" />
-            <h5>Call Us</h5>
-            <p>+1-800-123-4567</p>
-          </div>
-          <div className="col-md-4 text-center">
-            <FaMapMarkerAlt size={30} className="text-warning mb-2" />
-            <h5>Visit Us</h5>
-            <p>123 CineMatch HQ, Kerala, India</p>
-          </div>
+      <div className="contact-inner">
+
+        {/* ── Header ── */}
+        <div className="contact-header">
+          <p className="contact-eyebrow">Get in Touch</p>
+          <h1 className="contact-heading">
+            <span className="contact-heading-gold">CINE</span>MATCH
+          </h1>
+          <p className="contact-subheading">
+            Questions, feedback, or just want to talk movies? We're here.
+          </p>
         </div>
 
-        {/* Contact Form */}
-        <div className="row mt-5">
-          <div className="col-md-6 mx-auto">
-            <form onSubmit={sendEmail}>
-              <div className="mb-3">
-                <input 
-                  type="text" name="name" value={formData.name}
-                  className="form-control" placeholder="Your Name" 
-                  onChange={handleChange} required 
-                />
-              </div>
-              <div className="mb-3">
-                <input 
-                  type="email" name="email" value={formData.email}
-                  className="form-control" placeholder="Your Email" 
-                  onChange={handleChange} required 
-                />
-              </div>
-              <div className="mb-3">
-                <textarea 
-                  name="message" rows="4" value={formData.message}
-                  className="form-control" placeholder="Your Message" 
-                  onChange={handleChange} required 
-                />
-              </div>
-              <button type="submit" className="btn btn-warning w-100">
-                Send Message
-              </button>
-            </form>
+        {/* ── Main grid ── */}
+        <div className="contact-grid">
 
-            {/* Status Message */}
-            {status && <p className="text-center mt-3">{status}</p>}
-          </div>
-        </div>
+          {/* Left — info + socials */}
+          <div className="contact-left">
 
-        {/* Social Media */}
-        <div className="text-center mt-5 pt-5">
-          <h5>Follow Us on Socials</h5>
-          <div className="d-flex justify-content-center gap-3 mt-3">
-            <FaFacebook size={30} className="text-primary" />
-            <FaInstagram size={30} className="text-danger" />
-            <FaTwitter size={30} className="text-info" />
-            <FaTiktok size={30} className="text-white bg-dark rounded-circle p-1" />
-            <FaYoutube size={30} className="text-danger" />
+            {/* Info cards */}
+            <div className="contact-info-list">
+              <div className="contact-info-card">
+                <div className="contact-info-icon"><FaEnvelope /></div>
+                <div>
+                  <p className="contact-info-label">Email</p>
+                  <p className="contact-info-value">support@cinematch.com</p>
+                </div>
+              </div>
+              <div className="contact-info-card">
+                <div className="contact-info-icon"><FaPhone /></div>
+                <div>
+                  <p className="contact-info-label">Phone</p>
+                  <p className="contact-info-value">+1-800-123-4567</p>
+                </div>
+              </div>
+              <div className="contact-info-card">
+                <div className="contact-info-icon"><FaMapMarkerAlt /></div>
+                <div>
+                  <p className="contact-info-label">Location</p>
+                  <p className="contact-info-value">CineMatch HQ, Kerala, India</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div className="contact-side-divider" />
+
+            {/* Socials */}
+            <div>
+              <p className="contact-socials-label">Follow Us</p>
+              <div className="contact-socials">
+                {socials.map(({ icon, href, label }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="contact-social"
+                    aria-label={label}
+                  >
+                    {icon}
+                  </a>
+                ))}
+              </div>
+            </div>
           </div>
+
+          {/* Right — form card */}
+          <div className="contact-form-card">
+            <div className="contact-form-hairline" />
+            <div className="contact-form-body">
+              <h2 className="contact-form-title">Send a Message</h2>
+
+              <form onSubmit={sendEmail} className="contact-form">
+                <div className="contact-field">
+                  <label className="contact-label">Your Name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="e.g. Arjun Menon"
+                    className="contact-input"
+                    required
+                  />
+                </div>
+
+                <div className="contact-field">
+                  <label className="contact-label">Email Address</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="you@example.com"
+                    className="contact-input"
+                    required
+                  />
+                </div>
+
+                <div className="contact-field">
+                  <label className="contact-label">Message</label>
+                  <textarea
+                    name="message"
+                    rows={5}
+                    value={formData.message}
+                    onChange={handleChange}
+                    placeholder="What's on your mind?"
+                    className="contact-textarea"
+                    required
+                  />
+                </div>
+
+                <button type="submit" className="contact-submit-btn" disabled={sending}>
+                  {sending ? (
+                    <span className="contact-btn-sending">Sending…</span>
+                  ) : (
+                    <>
+                      <FaPaperPlane className="contact-btn-icon" />
+                      Send Message
+                    </>
+                  )}
+                </button>
+              </form>
+            </div>
+          </div>
+
         </div>
       </div>
 
-      {/* Toast Container */}
-      <ToastContainer />  {/* This will render the toast notifications */}
+      <ToastContainer theme="dark" position="top-center" autoClose={3000} />
     </div>
   );
 }

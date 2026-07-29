@@ -1,69 +1,414 @@
-.custom-modal .modal-content {
-    border-radius: 1rem;
-  }
-  
-  .tvshow-poster {
-    max-width: 100%;
-    height: auto;
-    border-radius: 12px;
-  }
-  
-  .cast-card {
-    width: 80px;
-    margin-right: 10px;
-  }
-  
-  .cast-img {
-    width: 60px;
-    height: 60px;
-    object-fit: cover;
-    margin-bottom: 5px;
-  }
-  
-  .cast-name {
-    font-size: 0.8rem;
-    word-wrap: break-word;
-  }
-  
-  .play-icon {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: rgba(255, 255, 255, 0.9);
-    transition: transform 0.3s ease;
-    z-index: 10;
-  }
-  
-  .play-icon:hover {
-    transform: translate(-50%, -50%) scale(1.1);
-  }
-  
-  /* Responsive Cast Section */
-  @media (max-width: 768px) {
-    .cast-card {
-      width: 60px;
-    }
-  
-    .cast-img {
-      width: 50px;
-      height: 50px;
-    }
-  
-    .cast-name {
-      font-size: 0.7rem;
-    }
-  }
-  
-  /* Make modal body scrollable on small devices */
-  @media (max-width: 576px) {
-    .modal-body {
-      max-height: 75vh;
-      overflow-y: auto;
-    }
-  
-    .section-title {
-      font-size: 1.1rem;
-    }
-  }
-  
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap');
+
+/* ─── Reset ──────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+/* ─── Backdrop ───────────────────────────────────────────────────── */
+.tvd-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 8, 16, 0.82);
+  backdrop-filter: blur(4px);
+  z-index: 1040;
+}
+
+/* ─── Slide-in panel ─────────────────────────────────────────────── */
+.tvd-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: min(680px, 100vw);
+  background: #0A0E1A;
+  border-left: 1px solid rgba(255, 255, 255, 0.07);
+  z-index: 1050;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+  animation: tvd-slide-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes tvd-slide-in {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+/* Blue hairline — TV-specific per CineMatch design system */
+.tvd-hairline {
+  flex-shrink: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, #3B82F6 50%, transparent 100%);
+}
+
+/* Close */
+.tvd-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 10;
+  background: rgba(5, 8, 16, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #8B9DC3;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+.tvd-close:hover {
+  color: #3B82F6;
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+/* Loading */
+.tvd-loading {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: #8B9DC3;
+  font-size: 0.9rem;
+}
+
+/* ─── Scrollable body ────────────────────────────────────────────── */
+.tvd-body {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(59, 130, 246, 0.25) transparent;
+}
+.tvd-body::-webkit-scrollbar { width: 4px; }
+.tvd-body::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.25);
+  border-radius: 4px;
+}
+
+/* ─── Hero ───────────────────────────────────────────────────────── */
+.tvd-hero {
+  position: relative;
+  background-color: #050810;
+  background-size: cover;
+  background-position: center top;
+  min-height: 300px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.tvd-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(5, 8, 16, 0.2) 0%,
+    rgba(5, 8, 16, 0.55) 40%,
+    rgba(10, 14, 26, 1) 100%
+  );
+}
+
+.tvd-hero-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  padding: 24px 24px 0;
+  width: 100%;
+}
+
+.tvd-poster {
+  width: 110px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  border: 2px solid rgba(59, 130, 246, 0.35);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  transform: translateY(20px);
+}
+
+.tvd-hero-info {
+  flex: 1;
+  padding-bottom: 8px;
+}
+
+/* TV badge */
+.tvd-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  background: rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 20px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #3B82F6;
+  margin-bottom: 10px;
+}
+
+.tvd-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  margin: 0 0 6px 0;
+  line-height: 1.05;
+}
+
+.tvd-meta {
+  font-size: 0.78rem;
+  color: #8B9DC3;
+  margin-bottom: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+
+.tvd-dot { opacity: 0.4; }
+
+.tvd-status {
+  font-weight: 600;
+  color: #8B9DC3;
+}
+.tvd-status--live {
+  color: #4ade80;
+}
+
+.tvd-genres {
+  font-size: 0.75rem;
+  color: rgba(139, 157, 195, 0.6);
+  margin: 0 0 10px 0;
+}
+
+/* Score */
+.tvd-score {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.tvd-star-icon {
+  color: #F5C518;
+  font-size: 0.95rem;
+}
+
+.tvd-score-val {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.3rem;
+  color: #F5C518;
+  letter-spacing: 0.03em;
+}
+
+.tvd-score-max {
+  font-size: 0.78rem;
+  color: #8B9DC3;
+}
+
+.tvd-vote-count {
+  font-size: 0.75rem;
+  color: rgba(139, 157, 195, 0.5);
+  margin-left: 2px;
+}
+
+/* Trailer button — blue for TV */
+.tvd-trailer-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 18px;
+  background: #3B82F6;
+  color: #ffffff;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.1em;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: opacity 0.2s, transform 0.15s;
+}
+.tvd-trailer-btn:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
+  color: #ffffff;
+}
+
+/* ─── Details body ───────────────────────────────────────────────── */
+.tvd-details {
+  padding: 40px 24px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.tvd-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Section label — blue accent for TV */
+.tvd-section-label {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
+  color: #3B82F6;
+  text-transform: uppercase;
+  margin: 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.tvd-overview {
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: #c4cfe5;
+  margin: 0;
+}
+
+/* ─── Cast ───────────────────────────────────────────────────────── */
+.tvd-cast {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.tvd-cast-card {
+  width: 82px;
+  text-align: center;
+}
+
+.tvd-cast-img-wrap {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 8px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  transition: border-color 0.2s;
+}
+.tvd-cast-card:hover .tvd-cast-img-wrap {
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+.tvd-cast-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tvd-cast-name {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin: 0 0 2px;
+  line-height: 1.3;
+}
+
+.tvd-cast-char {
+  font-size: 0.66rem;
+  color: #8B9DC3;
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* ─── Review form ────────────────────────────────────────────────── */
+.tvd-review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.tvd-stars {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tvd-star {
+  font-size: 1.5rem;
+  color: rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  transition: color 0.15s, transform 0.1s;
+}
+.tvd-star:hover,
+.tvd-star--active {
+  color: #F5C518;
+}
+.tvd-star:hover {
+  transform: scale(1.15);
+}
+
+.tvd-rating-label {
+  font-size: 0.8rem;
+  color: #8B9DC3;
+  margin-left: 6px;
+}
+
+.tvd-textarea {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  color: #ffffff;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+  min-height: 100px;
+}
+.tvd-textarea::placeholder { color: rgba(139, 157, 195, 0.4); }
+.tvd-textarea:focus {
+  border-color: rgba(59, 130, 246, 0.45);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08);
+}
+
+/* Submit — blue for TV */
+.tvd-submit-btn {
+  align-self: flex-start;
+  padding: 11px 28px;
+  background: #3B82F6;
+  color: #ffffff;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+}
+.tvd-submit-btn:hover:not(:disabled) {
+  opacity: 0.85;
+  transform: translateY(-1px);
+}
+.tvd-submit-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.tvd-login-prompt {
+  font-size: 0.875rem;
+  color: #8B9DC3;
+  margin: 0;
+}
+.tvd-login-accent {
+  color: #3B82F6;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .tvd-panel { width: 100vw; }
+  .tvd-title { font-size: 1.6rem; }
+  .tvd-poster { width: 85px; }
+  .tvd-details { padding: 36px 18px 48px; }
+}

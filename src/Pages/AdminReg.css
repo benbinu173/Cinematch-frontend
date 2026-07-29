@@ -1,7 +1,222 @@
-.adminreg-bg{
-    background: url('./retro-vhs-packaging-indoors.jpg') no-repeat center  ;
-    background-size: cover;
-    min-height: 100vh;
-   
-    padding: 20px;
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap');
+
+/* ── Base ── */
+.adminreg-bg {
+  background: #050810;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 32px 16px;
+  font-family: 'Inter', sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Radial gold glow — ambient atmosphere */
+.adminreg-bg::before {
+  content: '';
+  position: fixed;
+  top: -20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(245, 197, 24, 0.07) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Card ── */
+.adminreg-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 960px;
+  background: #0A0E1A;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  min-height: 520px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+}
+
+/* Gold hairline top-border */
+.adminreg-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #F5C518, transparent);
+  z-index: 2;
+}
+
+/* ── Left panel — cinematic still ── */
+.adminreg-visual {
+  flex: 1;
+  position: relative;
+  background: url('https://www.zacharyxavier.com/content/images/2022/01/2001.jpg') center/cover no-repeat;
+  min-height: 300px;
+}
+
+/* Left-heavy gradient so the panel is atmospheric, not distracting */
+.adminreg-visual-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    rgba(5, 8, 16, 0.75) 0%,
+    rgba(5, 8, 16, 0.35) 60%,
+    transparent 100%
+  );
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 36px 32px;
+}
+
+.adminreg-visual-tagline {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.6rem;
+  line-height: 1;
+  color: #fff;
+  letter-spacing: 0.04em;
+  margin: 0 0 6px;
+}
+
+.adminreg-visual-tagline span {
+  color: #F5C518;
+}
+
+.adminreg-visual-sub {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  color: #8B9DC3;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+/* ── Right panel — form ── */
+.adminreg-form-panel {
+  flex: 0 0 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 48px 40px;
+  background: #0A0E1A;
+  border-left: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.adminreg-heading {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  letter-spacing: 0.06em;
+  color: #fff;
+  margin: 0 0 4px;
+}
+
+.adminreg-subheading {
+  font-size: 0.78rem;
+  color: #8B9DC3;
+  margin: 0 0 32px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ── Inputs ── */
+.adminreg-field {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.adminreg-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+  box-sizing: border-box;
+}
+
+.adminreg-input::placeholder {
+  color: #8B9DC3;
+}
+
+.adminreg-input:focus {
+  border-color: #F5C518;
+  background: rgba(245, 197, 24, 0.04);
+}
+
+/* ── CTA button ── */
+.adminreg-btn {
+  width: 100%;
+  margin-top: 8px;
+  padding: 13px;
+  background: #F5C518;
+  color: #050810;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.1em;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+}
+
+.adminreg-btn:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+.adminreg-btn:active {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* ── Already a user link ── */
+.adminreg-link-row {
+  margin-top: 20px;
+  text-align: right;
+  font-size: 0.78rem;
+  color: #8B9DC3;
+}
+
+.adminreg-link-row a {
+  color: #F5C518;
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.15s;
+}
+
+.adminreg-link-row a:hover {
+  opacity: 0.75;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .adminreg-card {
+    flex-direction: column;
+    max-width: 440px;
+  }
+
+  .adminreg-visual {
+    min-height: 200px;
+    flex: none;
+  }
+
+  .adminreg-form-panel {
+    flex: none;
+    border-left: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    padding: 36px 28px;
+  }
 }

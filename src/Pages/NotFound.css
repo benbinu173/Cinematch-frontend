@@ -1,0 +1,137 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap');
+
+/* ── Base ── */
+.notfound-page {
+  background: #050810;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+  padding: 40px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Ambient glow centred on the 404 number */
+.notfound-page::before {
+  content: '';
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(245, 197, 24, 0.07) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Inner layout ── */
+.notfound-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 560px;
+  gap: 0;
+}
+
+/* ── Giant 404 ── */
+.notfound-code {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(7rem, 20vw, 11rem);
+  letter-spacing: 0.05em;
+  line-height: 1;
+  color: #fff;
+  margin: 0;
+  /* Gold on the middle digit */
+  position: relative;
+}
+
+.notfound-code .gold {
+  color: #F5C518;
+}
+
+/* Hairline divider under the number */
+.notfound-rule {
+  width: 80px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #F5C518, transparent);
+  margin: 20px auto 24px;
+}
+
+/* ── Copy ── */
+.notfound-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.6rem;
+  letter-spacing: 0.08em;
+  color: #fff;
+  margin: 0 0 10px;
+}
+
+.notfound-sub {
+  font-size: 0.85rem;
+  color: #8B9DC3;
+  line-height: 1.7;
+  margin: 0 0 36px;
+  max-width: 380px;
+}
+
+/* ── CTA ── */
+.notfound-btn {
+  display: inline-block;
+  background: #F5C518;
+  color: #050810;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 32px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+}
+
+.notfound-btn:hover {
+  opacity: 0.85;
+  transform: translateY(-2px);
+  color: #050810;
+}
+
+/* ── Film-strip decoration ── */
+.notfound-strip {
+  margin-top: 52px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0.18;
+}
+
+.notfound-strip-hole {
+  width: 10px;
+  height: 14px;
+  border-radius: 2px;
+  background: #fff;
+}
+
+.notfound-strip-frame {
+  width: 44px;
+  height: 34px;
+  border-radius: 3px;
+  border: 1.5px solid #fff;
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .notfound-title {
+    font-size: 1.3rem;
+  }
+
+  .notfound-sub {
+    font-size: 0.8rem;
+  }
+}

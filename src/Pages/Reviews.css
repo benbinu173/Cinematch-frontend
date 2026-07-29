@@ -1,0 +1,316 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap');
+
+/* ── Base ── */
+.reviews-page {
+  background: #050810;
+  min-height: 100vh;
+  padding: 56px 24px 72px;
+  font-family: 'Inter', sans-serif;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.reviews-page::before {
+  content: '';
+  position: fixed;
+  top: -10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 600px;
+  background: radial-gradient(ellipse, rgba(245, 197, 24, 0.05) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Header ── */
+.reviews-header {
+  text-align: center;
+  margin-bottom: 44px;
+  position: relative;
+  z-index: 1;
+}
+
+.reviews-header h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.8rem;
+  letter-spacing: 0.08em;
+  color: #fff;
+  margin: 0 0 6px;
+}
+
+.reviews-header h2 span {
+  color: #F5C518;
+}
+
+.reviews-header p {
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8B9DC3;
+  margin: 0;
+}
+
+.reviews-divider {
+  width: 120px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #F5C518, transparent);
+  margin: 14px auto 0;
+}
+
+/* ── List ── */
+.reviews-list {
+  max-width: 720px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Review card ── */
+.review-card {
+  background: #0A0E1A;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  padding: 24px 22px 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.2s;
+}
+
+.review-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #F5C518, transparent);
+  border-radius: 12px 12px 0 0;
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+.review-card:hover {
+  border-color: rgba(245, 197, 24, 0.18);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  transform: translateY(-3px);
+}
+
+.review-card:hover::before {
+  opacity: 1;
+}
+
+/* ── Card header row ── */
+.review-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.review-card-user {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.05rem;
+  letter-spacing: 0.05em;
+  color: #F5C518;
+  margin: 0;
+}
+
+.review-card-date {
+  font-size: 0.72rem;
+  color: #8B9DC3;
+}
+
+/* ── Stars ── */
+.review-stars {
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.review-stars .star-filled {
+  color: #F5C518;
+}
+
+.review-stars .star-empty {
+  color: rgba(245, 197, 24, 0.2);
+}
+
+/* ── Review text ── */
+.review-text {
+  font-size: 0.875rem;
+  color: #8B9DC3;
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* ── Separator ── */
+.review-sep {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ── Owner actions ── */
+.review-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.review-btn {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  border-radius: 7px;
+  padding: 6px 16px;
+  cursor: pointer;
+  border: 1px solid;
+  background: transparent;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.review-btn-edit {
+  border-color: rgba(245, 197, 24, 0.4);
+  color: #F5C518;
+}
+
+.review-btn-edit:hover {
+  background: rgba(245, 197, 24, 0.1);
+}
+
+.review-btn-delete {
+  border-color: rgba(255, 100, 100, 0.35);
+  color: #8B9DC3;
+}
+
+.review-btn-delete:hover {
+  border-color: rgba(255, 80, 80, 0.7);
+  color: #ff6b6b;
+  background: rgba(255, 80, 80, 0.08);
+}
+
+/* ── Edit mode ── */
+.review-edit-area {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.review-edit-textarea {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 12px 14px;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  resize: vertical;
+  min-height: 90px;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.review-edit-textarea:focus {
+  border-color: #F5C518;
+  background: rgba(245, 197, 24, 0.03);
+}
+
+/* Star rating selector */
+.review-star-selector {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.review-star-selector label {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8B9DC3;
+  margin: 0 4px 0 0;
+}
+
+.review-star-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.25rem;
+  padding: 0;
+  line-height: 1;
+  transition: transform 0.1s;
+}
+
+.review-star-btn:hover {
+  transform: scale(1.2);
+}
+
+.review-star-btn.active {
+  color: #F5C518;
+}
+
+.review-star-btn.inactive {
+  color: rgba(245, 197, 24, 0.2);
+}
+
+/* Edit action row */
+.review-edit-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.review-btn-save {
+  border-color: rgba(74, 222, 128, 0.4);
+  color: #4ade80;
+}
+
+.review-btn-save:hover {
+  background: rgba(74, 222, 128, 0.1);
+}
+
+.review-btn-cancel {
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #8B9DC3;
+}
+
+.review-btn-cancel:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #c8d3e8;
+}
+
+/* ── Empty state ── */
+.reviews-empty {
+  text-align: center;
+  padding: 72px 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.reviews-empty p {
+  font-size: 0.875rem;
+  color: #8B9DC3;
+  margin: 0;
+}
+
+/* ── Responsive ── */
+@media (max-width: 560px) {
+  .reviews-page {
+    padding: 40px 14px 56px;
+  }
+
+  .reviews-header h2 {
+    font-size: 2.1rem;
+  }
+
+  .review-card {
+    padding: 20px 16px 16px;
+  }
+}

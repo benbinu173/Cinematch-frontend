@@ -1,21 +1,20 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaUserCircle } from 'react-icons/fa';
+import { FaUserCircle, FaFilm, FaTv, FaSignOutAlt, FaLock, FaTrash, FaPen } from 'react-icons/fa';
 import Addmovies from '../Components/Addmovies';
 import Addseries from '../Components/Addseries';
-import { AiFillDelete, AiFillEdit } from "react-icons/ai";
+import EditMovies from '../Components/EditMovies';
+import EditSeries from '../Components/EditSeries';
 import { deleteUserMoviesAPI, deleteUserSeriesAPI, getUserMoviesAPI, getUserSeriesAPI } from '../Services/allApi';
 import { addResponseContext, editResponseContext } from '../Context/ContextSharing';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import EditMovies from '../Components/EditMovies';
-import EditSeries from '../Components/EditSeries';
 import './Profile.css';
 import { serverUrl } from '../Services/ServerUrl';
 
 function Profile() {
   const navigate = useNavigate();
-  const isLoggedIn = sessionStorage.getItem("token");
+  const isLoggedIn = sessionStorage.getItem('token');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [movies, setMovies] = useState([]);
@@ -25,9 +24,10 @@ function Profile() {
   const { editResponse } = useContext(editResponseContext);
   const [editingMovie, setEditingMovie] = useState(null);
   const [editingSeries, setEditingSeries] = useState(null);
+  const [activeTab, setActiveTab] = useState('movies');
 
   useEffect(() => {
-    const userData = JSON.parse(sessionStorage.getItem("existingUser"));
+    const userData = JSON.parse(sessionStorage.getItem('existingUser'));
     if (userData?.username && userData?.email) {
       setUsername(userData.username);
       setEmail(userData.email);
@@ -40,104 +40,221 @@ function Profile() {
   }, [addResponse, removeStatus, editResponse]);
 
   const getUserMovies = async () => {
-    if (isLoggedIn) {
-      try {
-        const token = sessionStorage.getItem('token');
-        const reqHeader = { Authorization: `Bearer ${token}` };
-        const result = await getUserMoviesAPI(reqHeader);
-        if (result?.data) setMovies(result.data);
-      } catch (error) {
-        console.error("Error fetching movies:", error);
-      }
-    }
+    if (!isLoggedIn) return;
+    try {
+      const reqHeader = { Authorization: `Bearer ${sessionStorage.getItem('token')}` };
+      const result = await getUserMoviesAPI(reqHeader);
+      if (result?.data) setMovies(result.data);
+    } catch (e) { console.error(e); }
   };
 
   const getUserSeries = async () => {
-    if (isLoggedIn) {
-      try {
-        const token = sessionStorage.getItem('token');
-        const reqHeader = { Authorization: `Bearer ${token}` };
-        const result = await getUserSeriesAPI(reqHeader);
-        if (result?.data) setSeries(result.data);
-      } catch (error) {
-        console.error("Error fetching series:", error);
-      }
-    }
+    if (!isLoggedIn) return;
+    try {
+      const reqHeader = { Authorization: `Bearer ${sessionStorage.getItem('token')}` };
+      const result = await getUserSeriesAPI(reqHeader);
+      if (result?.data) setSeries(result.data);
+    } catch (e) { console.error(e); }
   };
 
   const handleDelete = async (id, type) => {
-    if (isLoggedIn) {
-      const token = sessionStorage.getItem('token');
-      const reqHeader = { Authorization: `Bearer ${token}` };
-      const result = type === 'movie' ? await deleteUserMoviesAPI(id, reqHeader) : await deleteUserSeriesAPI(id, reqHeader);
-      if (result.status === 200) {
-        toast.success(`${type === 'movie' ? 'Movie' : 'Series'} deleted successfully`);
-        setRemoveStatus(result);
-      } else {
-        toast.error('Something went wrong');
-      }
+    if (!isLoggedIn) return;
+    const reqHeader = { Authorization: `Bearer ${sessionStorage.getItem('token')}` };
+    const result = type === 'movie'
+      ? await deleteUserMoviesAPI(id, reqHeader)
+      : await deleteUserSeriesAPI(id, reqHeader);
+    if (result.status === 200) {
+      toast.success(`${type === 'movie' ? 'Movie' : 'Series'} removed`);
+      setRemoveStatus(result);
+    } else {
+      toast.error('Something went wrong');
     }
   };
 
   const handleLogout = () => {
-    sessionStorage.removeItem("token");
-    navigate("/login");
+    sessionStorage.removeItem('token');
+    navigate('/login');
   };
 
-  return (
-    <div className="profilebg profile-container container-fluid">
-      {isLoggedIn ? (
-        <div className="card profile-card shadow-lg p-4 mx-auto text-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)', color: 'white' }}>
-          <FaUserCircle size={80} className="text-primary mb-3" />
-          <h2 className="fw-bold">Your Profile</h2>
-          <p className="text-muted">Manage your account information</p>
-          <p><strong>Name:</strong> {username}</p>
-          <p><strong>Email:</strong> {email}</p>
-          <button className="btn btn-danger w-100 mt-3" onClick={handleLogout}>Logout</button>
+  // ── ACCESS DENIED ──────────────────────────────
+  if (!isLoggedIn) {
+    return (
+      <div className="pf-root pf-denied">
+        <div className="pf-denied__card">
+          <div className="pf-denied__icon"><FaLock /></div>
+          <h2 className="pf-denied__title">Access Restricted</h2>
+          <p className="pf-denied__sub">You need to be signed in to view your profile.</p>
+          <Link to="/login" className="pf-btn pf-btn--gold">Sign In</Link>
         </div>
-      ) : (
-        <div className="text-center mt-5">
-          <h3 className="text-danger fw-bold">Access Denied</h3>
-          <p className="text-muted">You must be logged in to view your profile.</p>
-          <Link to="/login" className="btn btn-warning mt-3">Login Here</Link>
-        </div>
-      )}
+      </div>
+    );
+  }
 
-      <div className="row mt-5">
-        {isLoggedIn && [
-          { title: "🎬 My Movies", data: movies, addComponent: <Addmovies />, setEditing: setEditingMovie },
-          { title: "📺 My Series", data: series, addComponent: <Addseries />, setEditing: setEditingSeries }
-        ].map(({ title, data, addComponent, setEditing }, idx) => (
-          <div key={idx} className="col-md-6">
-            <div className="border shadow-sm p-4 rounded" style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)', color: 'white' }}>
-              <h4 className="fw-bold text-center">{title}</h4>
-              {addComponent}
-              <div className="row mt-4">
-                {data.map(item => (
-                  <div key={item._id} className="col-md-6 mb-3">
-                    <div className="card shadow-sm small-card" style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)', color: 'white', width: '180px', height: '260px' }}>
-                      <img src={`${serverUrl}/upload/${item.movieImg || item.seriesImg}`} className="card-img-top" style={{ height: '120px', objectFit: 'cover' }} alt={item.title} />
-                      <div className="card-body text-center p-2">
-                        <h6 className="card-title text-truncate">{item?.title}</h6>
-                        <div className="d-flex justify-content-center gap-2">
-                          <AiFillEdit className="text-primary edit-icon" onClick={() => setEditing(item)} />
-                          <AiFillDelete className="text-danger delete-icon" onClick={() => handleDelete(item._id, idx === 0 ? 'movie' : 'series')} />
-                        </div>
+  const initials = username ? username.slice(0, 2).toUpperCase() : '??';
+
+  return (
+    <div className="pf-root">
+
+      {/* ── HERO BANNER ── */}
+      <div className="pf-hero">
+        <div className="pf-hero__overlay" />
+        <div className="pf-hero__content">
+          <div className="pf-avatar">{initials}</div>
+          <div className="pf-hero__info">
+            <h1 className="pf-hero__name">{username}</h1>
+            <p className="pf-hero__email">{email}</p>
+            <div className="pf-hero__stats">
+              <div className="pf-stat">
+                <span className="pf-stat__num">{movies.length}</span>
+                <span className="pf-stat__label">Movies</span>
+              </div>
+              <div className="pf-stat__divider" />
+              <div className="pf-stat">
+                <span className="pf-stat__num">{series.length}</span>
+                <span className="pf-stat__label">Series</span>
+              </div>
+            </div>
+          </div>
+          <button className="pf-btn pf-btn--ghost pf-logout" onClick={handleLogout}>
+            <FaSignOutAlt /> Sign Out
+          </button>
+        </div>
+      </div>
+
+      {/* ── MAIN CONTENT ── */}
+      <div className="pf-container">
+
+        {/* Tab bar */}
+        <div className="pf-tabs">
+          <button
+            className={`pf-tab ${activeTab === 'movies' ? 'pf-tab--active' : ''}`}
+            onClick={() => setActiveTab('movies')}
+          >
+            <FaFilm className="pf-tab__icon" />
+            My Movies
+            <span className="pf-tab__badge">{movies.length}</span>
+          </button>
+          <button
+            className={`pf-tab ${activeTab === 'series' ? 'pf-tab--active' : ''}`}
+            onClick={() => setActiveTab('series')}
+          >
+            <FaTv className="pf-tab__icon" />
+            My Series
+            <span className="pf-tab__badge pf-tab__badge--blue">{series.length}</span>
+          </button>
+        </div>
+
+        {/* ── MOVIES PANEL ── */}
+        {activeTab === 'movies' && (
+          <div className="pf-panel">
+            <div className="pf-panel__header">
+              <h2 className="pf-panel__title">🎬 My Movies</h2>
+              <Addmovies />
+            </div>
+            {movies.length === 0 ? (
+              <div className="pf-empty">
+                <FaFilm className="pf-empty__icon" />
+                <p>No movies added yet. Add your first one above!</p>
+              </div>
+            ) : (
+              <div className="pf-grid">
+                {movies.map((item) => (
+                  <div key={item._id} className="pf-card">
+                    <div className="pf-card__img-wrap">
+                      <img
+                        src={`${serverUrl}/upload/${item.movieImg}`}
+                        alt={item.title}
+                        className="pf-card__img"
+                      />
+                      <div className="pf-card__actions">
+                        <button
+                          className="pf-card__action pf-card__action--edit"
+                          onClick={() => setEditingMovie(item)}
+                          title="Edit"
+                        >
+                          <FaPen />
+                        </button>
+                        <button
+                          className="pf-card__action pf-card__action--delete"
+                          onClick={() => handleDelete(item._id, 'movie')}
+                          title="Delete"
+                        >
+                          <FaTrash />
+                        </button>
                       </div>
+                    </div>
+                    <div className="pf-card__body">
+                      <p className="pf-card__title">{item.title}</p>
                     </div>
                   </div>
                 ))}
               </div>
-            </div>
+            )}
           </div>
-        ))}
+        )}
+
+        {/* ── SERIES PANEL ── */}
+        {activeTab === 'series' && (
+          <div className="pf-panel">
+            <div className="pf-panel__header">
+              <h2 className="pf-panel__title">📺 My Series</h2>
+              <Addseries />
+            </div>
+            {series.length === 0 ? (
+              <div className="pf-empty">
+                <FaTv className="pf-empty__icon" />
+                <p>No series added yet. Add your first one above!</p>
+              </div>
+            ) : (
+              <div className="pf-grid">
+                {series.map((item) => (
+                  <div key={item._id} className="pf-card">
+                    <div className="pf-card__img-wrap">
+                      <img
+                        src={`${serverUrl}/upload/${item.seriesImg}`}
+                        alt={item.title}
+                        className="pf-card__img"
+                      />
+                      <div className="pf-card__actions">
+                        <button
+                          className="pf-card__action pf-card__action--edit"
+                          onClick={() => setEditingSeries(item)}
+                          title="Edit"
+                        >
+                          <FaPen />
+                        </button>
+                        <button
+                          className="pf-card__action pf-card__action--delete"
+                          onClick={() => handleDelete(item._id, 'series')}
+                          title="Delete"
+                        >
+                          <FaTrash />
+                        </button>
+                      </div>
+                    </div>
+                    <div className="pf-card__body">
+                      <p className="pf-card__title">{item.title}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
       </div>
 
-      {/* ✅ Conditionally render the editors outside the loop */}
+      {/* Edit modals */}
       {editingMovie && <EditMovies movie={editingMovie} setEditingMovie={setEditingMovie} />}
       {editingSeries && <EditSeries series={editingSeries} setEditingSeries={setEditingSeries} />}
 
-      <ToastContainer />
+      <ToastContainer
+        position="bottom-right"
+        theme="dark"
+        autoClose={2000}
+        hideProgressBar
+        toastClassName="pf-toast"
+      />
     </div>
   );
 }

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./AllReviews.css";
@@ -13,10 +12,9 @@ const AllReviews = () => {
     const fetchAllReviews = async () => {
       try {
         const res = await api.get(`${serverUrl}/all-reviews`);
-        console.log("All reviews fetched: ", res.data);
         setReviews(res.data);
       } catch (error) {
-        console.error("❌ Error fetching all reviews:", error.message);
+        console.error("Error fetching all reviews:", error.message);
         toast.error("Failed to fetch reviews.");
       }
     };
@@ -25,65 +23,88 @@ const AllReviews = () => {
   }, []);
 
   const handleDelete = async (reviewId) => {
-    const confirm = window.confirm("Are you sure you want to delete this review?");
-    if (!confirm) return;
-  
-    const token = sessionStorage.getItem("token"); // get the stored JWT
-  
+    const confirmed = window.confirm("Delete this review? This cannot be undone.");
+    if (!confirmed) return;
+
+    const token = sessionStorage.getItem("token");
+
     try {
       await api.delete(`${serverUrl}/all-reviews/${reviewId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
-  
       setReviews((prev) => prev.filter((r) => r._id !== reviewId));
-      toast.success("Review deleted successfully!");
+      toast.success("Review deleted.");
     } catch (err) {
-      console.error("❌ Error deleting review:", err.message);
+      console.error("Error deleting review:", err.message);
       toast.error(err.response?.data?.message || "Failed to delete the review.");
     }
   };
-  
 
   const renderStars = (rating = 0) => {
-    return "★".repeat(rating) + "☆".repeat(5 - rating);
+    const filled = Math.max(0, Math.min(5, rating));
+    return (
+      <>
+        {"★".repeat(filled)}
+        <span className="star-empty">{"★".repeat(5 - filled)}</span>
+      </>
+    );
   };
 
   return (
-    <div className="container mt-5">
-      <ToastContainer />
-      <h2 className="text-center mb-4">All User Reviews</h2>
+    <div className="allreviews-page">
+      <ToastContainer position="top-center" theme="dark" autoClose={3000} />
+
+      {/* Header */}
+      <div className="allreviews-header">
+        <h2>All User <span>Reviews</span></h2>
+        <p>{reviews.length} {reviews.length === 1 ? "review" : "reviews"} total</p>
+        <div className="allreviews-divider" />
+      </div>
 
       {reviews.length === 0 ? (
-        <p className="text-center">No reviews available.</p>
+        <div className="allreviews-empty">
+          <p>No reviews have been submitted yet.</p>
+        </div>
       ) : (
-        <div className="row">
+        <div className="allreviews-grid">
           {reviews.map((review) => (
-            <div key={review._id} className="col-md-6 mb-4">
-              <div className="card shadow p-3">
-                <h5>
-                  <strong>Title:</strong> {review.title || "Unknown Title"}
-                </h5>
-                <h6>
-                  <strong>User:</strong> {review.user?.username || "Unknown"}
-                </h6>
-                <p className="mb-1">
-                  <strong>Review:</strong> {review.reviewText}
-                </p>
-                <p className="text-warning mb-1">
-                  {renderStars(review.rating || 0)}
-                </p>
-                <p className="text-muted">
-                  <small>{new Date(review.createdAt).toLocaleString()}</small>
-                </p>
-                <button
-                  className="btn btn-danger btn-sm mt-2"
-                  onClick={() => handleDelete(review._id)}
-                >
-                  Delete Review
-                </button>
+            <div key={review._id} className="review-card">
+              {/* Movie title */}
+              <p className="review-card-title">
+                {review.title || "Unknown Title"}
+              </p>
+
+              {/* Meta */}
+              <div className="review-card-meta">
+                <span className="review-card-user">
+                  {review.user?.username || "Unknown"}
+                </span>
+                <span className="review-card-date">
+                  {new Date(review.createdAt).toLocaleDateString(undefined, {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </span>
               </div>
+
+              {/* Stars */}
+              <p className="review-card-stars">
+                {renderStars(review.rating || 0)}
+              </p>
+
+              {/* Review text */}
+              <p className="review-card-text">{review.reviewText}</p>
+
+              <div className="review-card-sep" />
+
+              {/* Delete */}
+              <button
+                className="review-delete-btn"
+                onClick={() => handleDelete(review._id)}
+              >
+                Delete Review
+              </button>
             </div>
           ))}
         </div>

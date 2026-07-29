@@ -1,8 +1,368 @@
-.login-bg
-{
-    background: url('./mountain-landscape-with-hot-air-balloon-dawn-generative-ai.jpg') no-repeat center center ;
-    background-size: cover;
-  
-   
-    padding: 20px;
+/* ═══════════════════════════════════════════════
+   CineMatch — Login Page
+   Split-screen layout: cinematic left, form right
+═══════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --c-bg:        #050810;
+  --c-surface:   #0A0E1A;
+  --c-surface-2: #111827;
+  --c-border:    rgba(255,255,255,0.08);
+  --c-gold:      #F5C518;
+  --c-gold-dim:  rgba(245,197,24,0.1);
+  --c-text:      #E8EAF0;
+  --c-muted:     #8B9DC3;
+  --c-white:     #FFFFFF;
+  --radius-sm:   6px;
+  --radius-md:   12px;
+  --font-display:'Bebas Neue', sans-serif;
+  --font-body:   'Inter', sans-serif;
+  --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── ROOT — full viewport split ───────────────── */
+.lg-root {
+  display: flex;
+  min-height: 100vh;
+  background: var(--c-bg);
+  font-family: var(--font-body);
+  color: var(--c-text);
+}
+
+/* ══════════════════════════════════════════════
+   LEFT PANEL — cinematic backdrop
+══════════════════════════════════════════════ */
+.lg-left {
+  position: relative;
+  flex: 1.1;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+
+/* Movie collage / hero background */
+.lg-left__bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('https://dnm.nflximg.net/api/v6/BvVbc2Wxr2w6QuoANoSpJKEIWjQ/AAAAQfCvT5B0SSIVhvKQhA3bgaQyViG6qPTmt_EVTeDm8VuuG6ZvMYHkMfpXOvLT-Dz5heXU5Zg7_a_U6HI2wUY7Fcg5mmnEvbinP7IANpizZ-0g5IomcVcDLXJbhpPx3z8j5O59XuKoC6Zc2JS5SmJU2FmYsEU.jpg?r=0e4');
+  background-size: cover;
+  background-position: center;
+  filter: saturate(0.6);
+  transform: scale(1.04);
+}
+
+/* Dual gradient: bottom-up dark + right-side fade for blending with form */
+.lg-left__overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to right,  rgba(5,8,16,0)    60%, var(--c-bg) 100%),
+    linear-gradient(to top,    var(--c-bg)         0%, rgba(5,8,16,0.3) 50%, rgba(5,8,16,0.05) 100%);
+}
+
+.lg-left__content {
+  position: relative;
+  z-index: 1;
+  padding: 48px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+/* ── Logo ──────────────────────────────────────── */
+.lg-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 28px;
+  letter-spacing: 0.08em;
+  color: var(--c-white);
+  text-decoration: none;
+  align-self: flex-start;
+}
+
+.lg-logo__icon {
+  width: 34px;
+  height: 34px;
+  background: var(--c-gold);
+  color: var(--c-bg);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+}
+
+/* ── Quote ─────────────────────────────────────── */
+.lg-quote {
+  margin-top: auto;
+  max-width: 380px;
+}
+
+.lg-quote__text {
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 1.5;
+  color: rgba(232,234,240,0.9);
+  font-style: italic;
+  margin-bottom: 12px;
+}
+
+.lg-quote__attr {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-gold);
+}
+
+/* ── Film strip ────────────────────────────────── */
+.lg-strip {
+  display: flex;
+  gap: 6px;
+  margin-top: 32px;
+  opacity: 0.25;
+}
+
+.lg-strip__frame {
+  width: 32px;
+  height: 22px;
+  border: 1px solid var(--c-white);
+  border-radius: 2px;
+  position: relative;
+}
+
+.lg-strip__frame::before,
+.lg-strip__frame::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 4px;
+  background: var(--c-bg);
+  border-radius: 1px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.lg-strip__frame::before { top: -3px; }
+.lg-strip__frame::after  { bottom: -3px; }
+
+/* ══════════════════════════════════════════════
+   RIGHT PANEL — form
+══════════════════════════════════════════════ */
+.lg-right {
+  flex: 0 0 440px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--c-bg);
+  padding: 48px 40px;
+  /* Subtle left separator */
+  border-left: 1px solid var(--c-border);
+}
+
+.lg-form-wrap {
+  width: 100%;
+  max-width: 360px;
+}
+
+.lg-form__header {
+  margin-bottom: 40px;
+}
+
+.lg-form__title {
+  font-family: var(--font-display);
+  font-size: 52px;
+  letter-spacing: 0.04em;
+  color: var(--c-white);
+  line-height: 1;
+  margin-bottom: 10px;
+}
+
+.lg-form__sub {
+  font-size: 14px;
+  color: var(--c-muted);
+}
+
+/* ── Input fields ──────────────────────────────── */
+.lg-field {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.lg-field__icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 13px;
+  color: var(--c-muted);
+  pointer-events: none;
+  transition: color 0.2s;
+}
+
+.lg-field__input {
+  width: 100%;
+  padding: 14px 16px 14px 44px;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--c-white);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.lg-field__input::placeholder { color: var(--c-muted); }
+
+.lg-field__input:focus {
+  border-color: var(--c-gold);
+  box-shadow: 0 0 0 3px rgba(245,197,24,0.1);
+}
+
+.lg-field:focus-within .lg-field__icon {
+  color: var(--c-gold);
+}
+
+/* ── Submit button ─────────────────────────────── */
+.lg-submit {
+  width: 100%;
+  padding: 14px;
+  margin-top: 8px;
+  background: var(--c-gold);
+  color: var(--c-bg);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-size: 20px;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s var(--ease-out), box-shadow 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+}
+
+.lg-submit:hover:not(:disabled) {
+  background: #ffe45e;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(245,197,24,0.35);
+}
+
+.lg-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Loading spinner inside button */
+.lg-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(5,8,16,0.3);
+  border-top-color: var(--c-bg);
+  border-radius: 50%;
+  animation: lg-spin 0.7s linear infinite;
+}
+
+@keyframes lg-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Divider ───────────────────────────────────── */
+.lg-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 28px 0 20px;
+}
+
+.lg-divider__line {
+  flex: 1;
+  height: 1px;
+  background: var(--c-border);
+}
+
+.lg-divider__text {
+  font-size: 12px;
+  color: var(--c-muted);
+  white-space: nowrap;
+}
+
+/* ── Register link button ──────────────────────── */
+.lg-register-btn {
+  display: block;
+  width: 100%;
+  padding: 13px;
+  text-align: center;
+  background: transparent;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--c-text);
+  text-decoration: none;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.lg-register-btn:hover {
+  border-color: var(--c-gold);
+  color: var(--c-gold);
+  background: var(--c-gold-dim);
+}
+
+/* ── Toast ─────────────────────────────────────── */
+.lg-toast {
+  background: var(--c-surface-2, #111827) !important;
+  color: var(--c-text) !important;
+  border: 1px solid var(--c-border) !important;
+  font-family: var(--font-body) !important;
+  font-size: 13px !important;
+  border-radius: var(--radius-sm) !important;
+}
+
+/* ── RESPONSIVE ────────────────────────────────── */
+@media (max-width: 900px) {
+  .lg-left { display: none; }
+  .lg-right {
+    flex: 1;
+    border-left: none;
+    padding: 48px 24px;
+    /* Show a faint background hint on mobile */
+    background:
+      linear-gradient(to bottom, rgba(5,8,16,0.97), var(--c-bg)),
+      url('https://dnm.nflximg.net/api/v6/BvVbc2Wxr2w6QuoANoSpJKEIWjQ/AAAAQfCvT5B0SSIVhvKQhA3bgaQyViG6qPTmt_EVTeDm8VuuG6ZvMYHkMfpXOvLT-Dz5heXU5Zg7_a_U6HI2wUY7Fcg5mmnEvbinP7IANpizZ-0g5IomcVcDLXJbhpPx3z8j5O59XuKoC6Zc2JS5SmJU2FmYsEU.jpg?r=0e4')
+      center / cover;
+  }
+
+  /* Bring logo back on mobile since left panel is hidden */
+  .lg-right::before {
+    content: 'CINEMATCH';
+    display: block;
+    font-family: var(--font-display);
+    font-size: 26px;
+    letter-spacing: 0.1em;
+    color: var(--c-gold);
+    margin-bottom: 32px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .lg-right { padding: 32px 20px; }
+  .lg-form__title { font-size: 40px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lg-spinner { animation: none; }
+  .lg-submit  { transition: none; }
 }

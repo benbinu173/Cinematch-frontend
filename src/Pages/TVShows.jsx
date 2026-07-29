@@ -1,124 +1,226 @@
 import React, { useState, useEffect } from 'react';
-import { FaStar } from 'react-icons/fa';
+import { FaStar, FaBookmark, FaCheck, FaChevronLeft, FaChevronRight, FaTv } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './Tvseries.css';
+
 function TVShows() {
   const [shows, setShows] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [watchlistIds, setWatchlistIds] = useState(new Set());
+
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem('watchlist')) || [];
+    setWatchlistIds(new Set(stored.map((m) => m.id)));
+  }, []);
 
   useEffect(() => {
     fetchTVShows(page);
   }, [page]);
 
   const fetchTVShows = async (pageNumber) => {
+    setLoading(true);
     try {
-      const response = await axios.get("https://api.themoviedb.org/3/tv/popular", {
+      const response = await axios.get('https://api.themoviedb.org/3/tv/popular', {
         params: {
-          api_key: "104982ca487a975dd171416b2958f849",
-          language: "en-US",
+          api_key: '104982ca487a975dd171416b2958f849',
+          language: 'en-US',
           page: pageNumber,
-        }
+        },
       });
       setShows(response.data.results);
       setTotalPages(response.data.total_pages);
     } catch (error) {
-      console.error("Error fetching TV shows:", error);
+      console.error('Error fetching TV shows:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Function to add a TV show to the watchlist
   const addToWatchlist = (show) => {
     let watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
-    if (!watchlist.find((item) => item.id === show.id)) {
+    if (!watchlistIds.has(show.id)) {
       watchlist.push(show);
       localStorage.setItem('watchlist', JSON.stringify(watchlist));
-      toast.success("Added to Watchlist!");
+      setWatchlistIds((prev) => new Set([...prev, show.id]));
+      toast.success('Added to Watchlist!');
     } else {
-      toast.info("Already in Watchlist!");
+      toast.info('Already in your Watchlist');
     }
+  };
+
+  const goToPage = (next) => {
+    const clamped = Math.max(1, Math.min(next, totalPages));
+    if (clamped !== page) setPage(clamped);
+  };
+
+  const getPageNums = () => {
+    const range = [];
+    const delta = 2;
+    for (let i = Math.max(1, page - delta); i <= Math.min(totalPages, page + delta); i++) {
+      range.push(i);
+    }
+    return range;
   };
 
   return (
-    <div className="bg-tvseries text-dark">
-      {/* Hero Section */}
-      <div className="hero-section d-flex align-items-center justify-content-center position-relative text-center py-5" 
-        style={{
-          backgroundImage: "url(https://www.pinkvilla.com/english/images/2023/01/461908490_netflix-series_1600*900.jpg)", 
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          height: '60vh',
-        }}>
-        
-        {/* Dark Overlay */}
-        <div className="overlay position-absolute top-0 start-0 w-100 h-100" style={{backgroundColor: 'rgba(0, 0, 0, 0.6)'}}></div>
-        
-        <div className="container position-relative">
-          <h1 className="display-4 fw-bold text-light">Welcome to TV Shows</h1>
-          <p className="lead text-light">Discover the best TV shows and create your personalized watchlist!</p>
-        </div>
-      </div>
+    <div className="tv-root">
 
-      {/* TV Shows List */}
-      <div className="container mt-5">
-        <h2 className="text-center fw-bold mb-4 text-primary">📺 Trending TV Shows (Page {page})</h2>
-        <div className="row g-4">
-          {shows.map((show) => (
-            <div key={show.id} className="col-md-3">
-              <div className="card shadow-lg border-0 rounded-4 text-center" 
-                style={{ background: 'rgba(0, 0, 0, 0.7)', transition: "transform 0.3s", color: "white" }}
-                onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
-                onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
-              >
-                <img
-                  src={`https://image.tmdb.org/t/p/w500${show.poster_path}`}
-                  className="card-img-top rounded-top"
-                  alt={show.name}
-                  style={{ height: "320px", objectFit: "cover", transition: "transform 0.3s" }}
-                  loading="lazy"
-                />
-                <div className="card-body">
-                  <h5 className="card-title fw-bold text-light">{show.name}</h5>
-                  <p className="fw-bold">
-                    <FaStar className="text-warning" /> {show.vote_average.toFixed(1)}
-                  </p>
-                  <button
-                    className="btn btn-outline-primary w-100 mb-2"
-                    onClick={() => addToWatchlist(show)}
-                  >
-                    Add to Watchlist
-                  </button>
-                  <Link to={`/tvshows/${show.id}`} className="text-light" style={{ textDecoration: "none" }}>
-                    <button className="btn btn-outline-light btn-sm w-100">View Details</button>
-                  </Link>
-                </div>
-              </div>
+      {/* ── HERO ── */}
+      <section className="tv-hero">
+        <div className="tv-hero__bg" />
+        <div className="tv-hero__overlay" />
+        <div className="tv-hero__content">
+          <span className="tv-hero__eyebrow">
+            <FaTv className="tv-hero__eyebrow-icon" />
+            CineMatch · TV
+          </span>
+          <h1 className="tv-hero__title">Popular TV Shows</h1>
+          <p className="tv-hero__sub">
+            From prestige dramas to binge-worthy thrillers — discover what the world is watching and build your perfect watchlist.
+          </p>
+        </div>
+        <div className="tv-hero__fade" />
+      </section>
+
+      {/* ── GRID SECTION ── */}
+      <section className="tv-section">
+        <div className="tv-container">
+
+          {/* Header */}
+          <div className="tv-header">
+            <h2 className="tv-header__title">
+              📺 Trending Shows
+              <span className="tv-header__page">Page {page}</span>
+            </h2>
+            <p className="tv-header__count">{shows.length} titles</p>
+          </div>
+
+          {/* Grid */}
+          {loading ? (
+            <div className="tv-grid">
+              {[...Array(20)].map((_, i) => (
+                <div key={i} className="tv-skeleton" />
+              ))}
             </div>
-          ))}
-        </div>
+          ) : (
+            <div className="tv-grid">
+              {shows.map((show, idx) => {
+                const inList = watchlistIds.has(show.id);
+                return (
+                  <div key={show.id} className="tv-card">
+                    <div className="tv-card__rank">
+                      #{(page - 1) * 20 + idx + 1}
+                    </div>
 
-        {/* Pagination Controls */}
-        <div className="d-flex justify-content-center mt-5">
-          <button
-            className="btn btn-primary me-3"
-            onClick={() => setPage((prevPage) => Math.max(prevPage - 1, 1))}
-            disabled={page === 1}
-          >
-            Previous
-          </button>
-          <button
-            className="btn btn-primary"
-            onClick={() => setPage((prevPage) => Math.min(prevPage + 1, totalPages))}
-            disabled={page === totalPages}
-          >
-            Next
-          </button>
+                    <div className="tv-card__img-wrap">
+                      <img
+                        src={
+                          show.poster_path
+                            ? `https://image.tmdb.org/t/p/w500${show.poster_path}`
+                            : 'https://via.placeholder.com/300x450/0A0E1A/8B9DC3?text=No+Poster'
+                        }
+                        alt={show.name}
+                        className="tv-card__img"
+                        loading="lazy"
+                      />
+                      <div className="tv-card__hover">
+                        <p className="tv-card__overview">
+                          {show.overview?.slice(0, 120)}…
+                        </p>
+                        <Link to={`/tvshows/${show.id}`} className="tv-card__detail-btn">
+                          View Details
+                        </Link>
+                      </div>
+                    </div>
+
+                    <div className="tv-card__body">
+                      <h3 className="tv-card__title">{show.name}</h3>
+                      <div className="tv-card__meta">
+                        <span className="tv-card__rating">
+                          <FaStar className="tv-card__star" />
+                          {show.vote_average?.toFixed(1)}
+                        </span>
+                        <span className="tv-card__year">
+                          {show.first_air_date?.slice(0, 4)}
+                        </span>
+                      </div>
+                      <button
+                        className={`tv-card__wl-btn ${inList ? 'tv-card__wl-btn--active' : ''}`}
+                        onClick={() => addToWatchlist(show)}
+                      >
+                        {inList ? (
+                          <><FaCheck className="tv-card__wl-icon" /> In Watchlist</>
+                        ) : (
+                          <><FaBookmark className="tv-card__wl-icon" /> Add to Watchlist</>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* ── PAGINATION ── */}
+          <div className="tv-pagination">
+            <button
+              className="tv-page-btn tv-page-btn--arrow"
+              onClick={() => goToPage(page - 1)}
+              disabled={page === 1}
+            >
+              <FaChevronLeft />
+            </button>
+
+            {page > 3 && (
+              <>
+                <button className="tv-page-btn" onClick={() => goToPage(1)}>1</button>
+                {page > 4 && <span className="tv-page-ellipsis">…</span>}
+              </>
+            )}
+
+            {getPageNums().map((n) => (
+              <button
+                key={n}
+                className={`tv-page-btn ${n === page ? 'tv-page-btn--active' : ''}`}
+                onClick={() => goToPage(n)}
+              >
+                {n}
+              </button>
+            ))}
+
+            {page < totalPages - 2 && (
+              <>
+                {page < totalPages - 3 && <span className="tv-page-ellipsis">…</span>}
+                <button className="tv-page-btn" onClick={() => goToPage(totalPages)}>
+                  {totalPages}
+                </button>
+              </>
+            )}
+
+            <button
+              className="tv-page-btn tv-page-btn--arrow"
+              onClick={() => goToPage(page + 1)}
+              disabled={page === totalPages}
+            >
+              <FaChevronRight />
+            </button>
+          </div>
+
         </div>
-        <ToastContainer position="top-center" theme="light" autoClose={2000} />
-      </div>
+      </section>
+
+      <ToastContainer
+        position="bottom-right"
+        theme="dark"
+        autoClose={2000}
+        hideProgressBar
+        toastClassName="tv-toast"
+      />
     </div>
   );
 }

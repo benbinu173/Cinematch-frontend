@@ -1,9 +1,222 @@
-.card {
-    border-radius: 12px;
-    transition: 0.3s ease-in-out;
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap');
+
+/* ── Base ── */
+.allreviews-page {
+  background: #050810;
+  min-height: 100vh;
+  padding: 56px 24px 72px;
+  font-family: 'Inter', sans-serif;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Ambient glow */
+.allreviews-page::before {
+  content: '';
+  position: fixed;
+  top: -10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 600px;
+  background: radial-gradient(ellipse, rgba(245, 197, 24, 0.05) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Header ── */
+.allreviews-header {
+  text-align: center;
+  margin-bottom: 44px;
+  position: relative;
+  z-index: 1;
+}
+
+.allreviews-header h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.8rem;
+  letter-spacing: 0.08em;
+  color: #fff;
+  margin: 0 0 6px;
+}
+
+.allreviews-header h2 span {
+  color: #F5C518;
+}
+
+.allreviews-header p {
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8B9DC3;
+  margin: 0;
+}
+
+.allreviews-divider {
+  width: 120px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #F5C518, transparent);
+  margin: 14px auto 0;
+}
+
+/* ── Grid ── */
+.allreviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Review card ── */
+.review-card {
+  background: #0A0E1A;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  padding: 24px 22px 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.2s;
+}
+
+/* Gold hairline — reveals on hover */
+.review-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #F5C518, transparent);
+  border-radius: 12px 12px 0 0;
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+.review-card:hover {
+  border-color: rgba(245, 197, 24, 0.2);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+  transform: translateY(-3px);
+}
+
+.review-card:hover::before {
+  opacity: 1;
+}
+
+/* Movie title */
+.review-card-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.2rem;
+  letter-spacing: 0.05em;
+  color: #fff;
+  margin: 0;
+  line-height: 1.2;
+}
+
+/* Meta row — username + date */
+.review-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.review-card-user {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #F5C518;
+  letter-spacing: 0.04em;
+}
+
+.review-card-date {
+  font-size: 0.72rem;
+  color: #8B9DC3;
+}
+
+/* Stars */
+.review-card-stars {
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  color: #F5C518;
+  /* un-filled stars muted */
+  margin: 0;
+}
+
+.review-card-stars .star-empty {
+  color: rgba(245, 197, 24, 0.2);
+}
+
+/* Review text */
+.review-card-text {
+  font-size: 0.85rem;
+  color: #8B9DC3;
+  line-height: 1.6;
+  margin: 0;
+  /* clamp long reviews */
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Separator */
+.review-card-sep {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+  margin: 4px 0;
+}
+
+/* Delete button — quiet until hovered */
+.review-delete-btn {
+  align-self: flex-start;
+  background: transparent;
+  border: 1px solid rgba(255, 100, 100, 0.35);
+  color: #8B9DC3;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  border-radius: 7px;
+  padding: 6px 16px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.review-delete-btn:hover {
+  border-color: rgba(255, 80, 80, 0.7);
+  color: #ff6b6b;
+  background: rgba(255, 80, 80, 0.08);
+}
+
+/* ── Empty state ── */
+.allreviews-empty {
+  text-align: center;
+  padding: 80px 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.allreviews-empty p {
+  font-size: 0.9rem;
+  color: #8B9DC3;
+  margin: 0;
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .allreviews-page {
+    padding: 40px 14px 56px;
   }
-  .card:hover {
-    transform: scale(1.02);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+
+  .allreviews-grid {
+    grid-template-columns: 1fr;
   }
-  
+
+  .allreviews-header h2 {
+    font-size: 2.2rem;
+  }
+}

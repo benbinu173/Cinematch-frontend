@@ -1,7 +1,253 @@
-.adminlogin-bg{
-    background: url('./futuristic-moon-background.jpg') no-repeat center  ;
-    background-size: cover;
-    min-height: 100vh;
-   
-    padding: 20px;
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; }
+
+/* ─── Page ───────────────────────────────────────────────────────── */
+.al-page {
+  min-height: 100vh;
+  background: #050810;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Deep radial glow — more intense than user login to feel "restricted" */
+.al-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 900px;
+  height: 900px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(245, 197, 24, 0.055) 0%,
+    rgba(59, 82, 180, 0.04) 40%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── Card ───────────────────────────────────────────────────────── */
+.al-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 820px;
+  background: #0A0E1A;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* Gold hairline */
+.al-hairline {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, #F5C518 50%, transparent 100%);
+}
+
+.al-inner {
+  display: flex;
+  min-height: 480px;
+}
+
+/* ─── Left panel ─────────────────────────────────────────────────── */
+.al-left {
+  flex: 1;
+  padding: 44px 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* Subtle left-angled vignette to feel more "secure" */
+  background: linear-gradient(
+    135deg,
+    rgba(245, 197, 24, 0.035) 0%,
+    rgba(59, 82, 180, 0.025) 50%,
+    transparent 100%
+  );
+}
+
+.al-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.4rem;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  margin-bottom: 16px;
+}
+.al-logo-cine  { color: #F5C518; }
+.al-logo-match { color: #ffffff; }
+
+/* Restricted badge */
+.al-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 12px;
+  background: rgba(245, 197, 24, 0.08);
+  border: 1px solid rgba(245, 197, 24, 0.22);
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #F5C518;
+  margin-bottom: 16px;
+  width: fit-content;
+}
+
+.al-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #F5C518;
+  /* Pulse to signal "live / active" */
+  animation: al-pulse 2s ease-in-out infinite;
+}
+
+@keyframes al-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.75); }
+}
+
+.al-left-desc {
+  font-size: 0.8rem;
+  color: rgba(139, 157, 195, 0.7);
+  line-height: 1.6;
+  margin: 0 0 28px;
+  max-width: 210px;
+}
+
+.al-gif {
+  width: 160px;
+  border-radius: 10px;
+  opacity: 0.88;
+  margin-bottom: 32px;
+}
+
+.al-reg-hint {
+  font-size: 0.78rem;
+  color: #8B9DC3;
+  margin: 0;
+}
+
+.al-reg-link {
+  color: #F5C518;
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.al-reg-link:hover { opacity: 0.7; }
+
+/* ─── Vertical divider ───────────────────────────────────────────── */
+.al-divider {
+  width: 1px;
+  background: rgba(255, 255, 255, 0.06);
+  margin: 32px 0;
+}
+
+/* ─── Right panel ────────────────────────────────────────────────── */
+.al-right {
+  flex: 1.15;
+  padding: 44px 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.al-heading {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.6rem;
+  letter-spacing: 0.06em;
+  color: #ffffff;
+  margin: 0 0 6px;
+  line-height: 1;
+}
+
+.al-subheading {
+  font-size: 0.82rem;
+  color: #8B9DC3;
+  margin: 0 0 36px;
+}
+
+/* ─── Form ───────────────────────────────────────────────────────── */
+.al-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.al-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.al-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #8B9DC3;
+}
+
+.al-input {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  color: #ffffff;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
+.al-input::placeholder { color: rgba(139, 157, 195, 0.4); }
+.al-input:focus {
+  border-color: rgba(245, 197, 24, 0.45);
+  box-shadow: 0 0 0 3px rgba(245, 197, 24, 0.08);
+}
+
+/* ─── Login button ───────────────────────────────────────────────── */
+.al-btn {
+  margin-top: 6px;
+  padding: 14px;
+  background: #F5C518;
+  color: #050810;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.14em;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  transition: opacity 0.2s, transform 0.15s;
+}
+.al-btn:hover:not(:disabled) {
+  opacity: 0.87;
+  transform: translateY(-1px);
+}
+.al-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .al-inner { flex-direction: column; }
+  .al-divider { width: auto; height: 1px; margin: 0 28px; }
+  .al-left {
+    padding: 32px 24px 20px;
+    align-items: center;
+    text-align: center;
+  }
+  .al-left-desc { max-width: 100%; }
+  .al-gif { width: 120px; }
+  .al-right { padding: 24px 24px 36px; }
 }

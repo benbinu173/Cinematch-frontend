@@ -1,0 +1,282 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap');
+
+/* ── Trigger button ── */
+.addmovie-trigger-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: #F5C518;
+  color: #050810;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 24px;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+}
+
+.addmovie-trigger-btn:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
+}
+
+/* ── Modal backdrop ── */
+.addmovie-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+  padding: 20px;
+}
+
+/* ── Modal panel ── */
+.addmovie-modal {
+  background: #0A0E1A;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 720px;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.7);
+}
+
+/* Gold hairline top */
+.addmovie-modal::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #F5C518, transparent);
+}
+
+/* ── Modal header ── */
+.addmovie-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 28px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.addmovie-modal-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.6rem;
+  letter-spacing: 0.07em;
+  color: #fff;
+  margin: 0;
+}
+
+.addmovie-modal-title span {
+  color: #F5C518;
+}
+
+.addmovie-close-btn {
+  background: none;
+  border: none;
+  color: #8B9DC3;
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: color 0.2s, background 0.2s;
+}
+
+.addmovie-close-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* ── Modal body ── */
+.addmovie-modal-body {
+  padding: 28px 28px 20px;
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+}
+
+/* ── Image upload ── */
+.addmovie-upload-col {
+  flex: 0 0 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.addmovie-upload-label {
+  display: block;
+  cursor: pointer;
+  position: relative;
+}
+
+.addmovie-upload-img {
+  width: 130px;
+  height: 130px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: block;
+  transition: border-color 0.2s, opacity 0.2s;
+}
+
+.addmovie-upload-label:hover .addmovie-upload-img {
+  border-color: #F5C518;
+  opacity: 0.85;
+}
+
+/* Camera icon overlay */
+.addmovie-upload-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  background: rgba(5, 8, 16, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.addmovie-upload-label:hover .addmovie-upload-overlay {
+  opacity: 1;
+}
+
+.addmovie-upload-icon {
+  color: #F5C518;
+  font-size: 1.5rem;
+}
+
+.addmovie-upload-hint {
+  font-size: 0.7rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #8B9DC3;
+  text-align: center;
+}
+
+/* ── Form col ── */
+.addmovie-form-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Two-column row for Year + Rating */
+.addmovie-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* Shared input / textarea */
+.addmovie-input,
+.addmovie-textarea {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 8px;
+  padding: 11px 14px;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.addmovie-input::placeholder,
+.addmovie-textarea::placeholder {
+  color: #8B9DC3;
+}
+
+.addmovie-input:focus,
+.addmovie-textarea:focus {
+  border-color: #F5C518;
+  background: rgba(245, 197, 24, 0.03);
+}
+
+.addmovie-textarea {
+  resize: vertical;
+  min-height: 82px;
+  line-height: 1.6;
+}
+
+/* ── Modal footer ── */
+.addmovie-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 18px 28px 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.addmovie-btn {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  border-radius: 8px;
+  padding: 9px 22px;
+  cursor: pointer;
+  border: 1px solid;
+  background: transparent;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.15s;
+}
+
+.addmovie-btn-cancel {
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #8B9DC3;
+}
+
+.addmovie-btn-cancel:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #c8d3e8;
+}
+
+.addmovie-btn-add {
+  background: #F5C518;
+  border-color: #F5C518;
+  color: #050810;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.1em;
+}
+
+.addmovie-btn-add:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
+}
+
+/* ── Responsive ── */
+@media (max-width: 560px) {
+  .addmovie-modal-body {
+    flex-direction: column;
+    align-items: center;
+    padding: 22px 18px 16px;
+  }
+
+  .addmovie-upload-col {
+    flex: none;
+  }
+
+  .addmovie-row {
+    grid-template-columns: 1fr;
+  }
+
+  .addmovie-modal-header,
+  .addmovie-modal-footer {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+}

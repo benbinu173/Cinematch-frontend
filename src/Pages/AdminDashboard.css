@@ -1,62 +1,253 @@
-/* Admin Dashboard Background */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap');
+
+/* ── Base ── */
 .admin-dashboard {
-    background: url('./pexels-nathan-engel-50858-436413.jpg') no-repeat center center fixed;
-    background-size: cover;
-    min-height: 100vh;
-   
-    padding: 20px;
+  background: #050810;
+  min-height: 100vh;
+  padding: 48px 32px;
+  font-family: 'Inter', sans-serif;
+  position: relative;
+  overflow-x: hidden;
 }
 
-/* Dashboard Title */
-h2 {
-    font-size: 2.5rem;
-    font-weight: bold;
-    text-align: center;
-    color: #fff;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+/* Ambient radial glow behind the page */
+.admin-dashboard::before {
+  content: '';
+  position: fixed;
+  top: -10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 600px;
+  background: radial-gradient(ellipse, rgba(245, 197, 24, 0.055) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: 0;
 }
 
-/* Card Styling (Glassmorphism Effect) */
+/* ── Login gate ── */
+.login-card {
+  position: relative;
+  z-index: 1;
+  max-width: 380px;
+  margin: 15vh auto 0;
+  background: #0A0E1A;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  padding: 48px 36px;
+  text-align: center;
+}
 
-/* Card Styling */
+.login-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #F5C518, transparent);
+  border-radius: 14px 14px 0 0;
+}
+
+.login-card h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.8rem;
+  letter-spacing: 0.06em;
+  color: #fff;
+  margin: 0 0 24px;
+  text-shadow: none;
+}
+
+.login-card .btn-primary {
+  background: #F5C518;
+  color: #050810;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 28px;
+  text-decoration: none;
+  display: inline-block;
+  transition: opacity 0.2s;
+}
+
+.login-card .btn-primary:hover {
+  opacity: 0.82;
+}
+
+/* ── Dashboard header ── */
+.dashboard-title {
+  font-family: 'Bebas Neue', sans-serif !important;
+  font-size: 2.6rem !important;
+  letter-spacing: 0.08em;
+  color: #fff !important;
+  text-align: center;
+  text-shadow: none !important;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.dashboard-title span {
+  color: #F5C518;
+}
+
+.dashboard-eyebrow {
+  text-align: center;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8B9DC3;
+  margin-bottom: 44px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Stat grid ── */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Stat cards ── */
 .stat-card {
-    background: rgba(255, 255, 255, 0.2); /* Translucent effect */
-    backdrop-filter: blur(8px); /* Glass effect */
-    border-radius: 15px;
-    padding: 20px;
-    color: white;
-    text-align: center;
-    transition: all 0.3s ease-in-out;
+  background: #0A0E1A;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  padding: 32px 24px 28px;
+  color: #fff;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.2s;
+  /* Reset Bootstrap mt-5 inline via CSS */
+  margin-top: 0 !important;
+}
+
+/* Gold hairline top per card */
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(245, 197, 24, 0.5), transparent);
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+.stat-card:hover {
+  border-color: rgba(245, 197, 24, 0.25);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+  transform: translateY(-4px);
+  background: #0A0E1A; /* stay dark — no color bleed */
+}
+
+.stat-card:hover::before {
+  opacity: 1;
+}
+
+/* Icon */
+.stat-card svg {
+  color: #8B9DC3;
+  margin-bottom: 16px;
+  transition: color 0.2s;
+}
+
+.stat-card:hover svg {
+  color: #F5C518;
+}
+
+/* Number / label */
+.stat-card h5 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.15rem;
+  letter-spacing: 0.07em;
+  color: #fff;
+  margin: 0 0 6px;
+}
+
+.stat-card p {
+  font-size: 0.8rem;
+  color: #8B9DC3;
+  margin: 0 0 20px;
+}
+
+/* Card CTA button */
+.stat-card .btn {
+  display: inline-block;
+  background: transparent;
+  border: 1px solid rgba(245, 197, 24, 0.45);
+  color: #F5C518;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: 8px;
+  padding: 8px 20px;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s, transform 0.15s;
+}
+
+.stat-card .btn:hover {
+  background: #F5C518;
+  color: #050810;
+  transform: none; /* override Bootstrap scale */
+}
+
+/* ── TV shows card — blue signal ── */
+.stat-card.tvshows svg {
+  color: #3B82F6;
+}
+
+.stat-card.tvshows .btn {
+  border-color: rgba(59, 130, 246, 0.45);
+  color: #3B82F6;
+}
+
+.stat-card.tvshows .btn:hover {
+  background: #3B82F6;
+  color: #fff;
+}
+
+/* ── Logout ── */
+.logout-btn {
+  font-family: 'Bebas Neue', sans-serif !important;
+  font-size: 1rem !important;
+  letter-spacing: 0.1em;
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: #8B9DC3 !important;
+  border-radius: 8px !important;
+  padding: 10px 28px !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: border-color 0.2s, color 0.2s !important;
+}
+
+.logout-btn:hover {
+  border-color: rgba(255, 80, 80, 0.5) !important;
+  color: #ff6b6b !important;
+  background: transparent !important;
+  transform: none !important;
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .admin-dashboard {
+    padding: 32px 16px;
   }
-  
-  /* Hover Effect */
-  .stat-card:hover {
-    background: rgba(255, 255, 255, 0.4); /* Lighter translucent effect */
-    backdrop-filter: blur(12px); /* Stronger blur */
-    transform: scale(1.05);
-    color: white; /* Ensure text remains white */
+
+  .dashboard-title {
+    font-size: 2rem !important;
   }
-  
-  /* Icons Color on Hover */
-  .stat-card:hover h5,
-  .stat-card:hover p {
-    color: white !important;
+
+  .dashboard-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
   }
-  
-  /* Login Card */
-  .login-card {
-    background: rgba(0, 0, 0, 0.4); /* Dark translucent for login */
-    backdrop-filter: blur(10px);
-    color: white;
-  }
-  
-  /* Button Styling */
-  .btn {
-    border-radius: 10px;
-    font-weight: bold;
-    transition: all 0.3s ease;
-  }
-  
-  .btn:hover {
-    transform: scale(1.1);
-  }
+}
